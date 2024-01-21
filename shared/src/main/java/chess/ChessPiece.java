@@ -4,6 +4,7 @@ import chess.PieceMovesCalculators.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -36,7 +37,7 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return pieceColor;
     }
 
     /**
@@ -54,30 +55,43 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        if(getPieceType().equals("King")) {
+        if(getPieceType().equals(PieceType.KING)) {
             PieceMovesCalculator kingInterface = new KingMovesCalculator();
             return kingInterface.calculateMoves(board, myPosition);
         }
-        if(getPieceType().equals("Queen")) {
+        if(getPieceType().equals(PieceType.QUEEN)) {
             PieceMovesCalculator queenInterface = new QueenMovesCalculator();
             return queenInterface.calculateMoves(board, myPosition);
         }
-        if(getPieceType().equals("Bishop")) {
+        if(getPieceType().equals(PieceType.BISHOP)) {
             PieceMovesCalculator bishopInterface = new BishopMovesCalculator();
             return bishopInterface.calculateMoves(board, myPosition);
         }
-        if(getPieceType().equals("Knight")) {
+        if(getPieceType().equals(PieceType.KNIGHT)) {
             PieceMovesCalculator knightInterface = new KnightMovesCalculator();
             return knightInterface.calculateMoves(board, myPosition);
         }
-        if(getPieceType().equals("Pawn")) {
+        if(getPieceType().equals(PieceType.PAWN)) {
             PieceMovesCalculator pawnInterface = new PawnMovesCalculator();
             return pawnInterface.calculateMoves(board, myPosition);
         }
-        if(getPieceType().equals("Rook")) {
+        if(getPieceType().equals(PieceType.ROOK)) {
             PieceMovesCalculator rookInterface = new RookMovesCalculator();
             return rookInterface.calculateMoves(board, myPosition);
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return type == that.type && pieceColor == that.pieceColor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, pieceColor);
     }
 }
