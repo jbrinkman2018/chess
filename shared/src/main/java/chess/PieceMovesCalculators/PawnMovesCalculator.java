@@ -8,13 +8,13 @@ import java.util.HashSet;
 import java.util.Collection;
 
 public class PawnMovesCalculator implements PieceMovesCalculator{
-    public void addNormalMove(int curRow, int curCol, ChessBoard board, ChessPosition myPosition, ArrayList<chess.ChessMove> availableMoves) {
+    private void addNormalMove(int curRow, int curCol, ChessBoard board, ChessPosition myPosition, ArrayList<chess.ChessMove> availableMoves) {
         if (curRow < 8 && curRow >1) {
             ChessPosition availablePosition = new ChessPosition(curRow, curCol);
             if (board.getPiece(availablePosition) == null) {
                 chess.ChessMove availableMove = new chess.ChessMove(myPosition, availablePosition, null);
                 availableMoves.add(availableMove);
-                if (myPosition.getRow() == 2) { // first move for that pawn can go forward two spaces
+                if ((myPosition.getRow() == 2 && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE) || (myPosition.getRow() == 7 && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK)) { // first move for that pawn can go forward two spaces
                     if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK) curRow--;
                     else curRow++;
                     availablePosition = new ChessPosition(curRow, curCol);
@@ -27,7 +27,7 @@ public class PawnMovesCalculator implements PieceMovesCalculator{
         }
     }
 
-    public void addPromotionPieceOption(int curRow, int curCol, chess.ChessBoard board, chess.ChessPosition myPosition, HashSet<ChessMove> promotionMoves){
+    private void addPromotionPieceOption(int curRow, int curCol, chess.ChessBoard board, chess.ChessPosition myPosition, HashSet<ChessMove> promotionMoves){
         ChessPosition availablePosition = new ChessPosition(curRow, curCol);
         if (board.getPiece(availablePosition) == null) {
             for (ChessPiece.PieceType pieceType: ChessPiece.PieceType.values()) {
@@ -39,7 +39,7 @@ public class PawnMovesCalculator implements PieceMovesCalculator{
         }
     }
 
-    public void addCapture(int curRow, int curCol, chess.ChessBoard board, chess.ChessPosition myPosition, HashSet<ChessMove> promotionMoves, ArrayList<ChessMove> availableMoves) {
+    private void addCapture(int curRow, int curCol, chess.ChessBoard board, chess.ChessPosition myPosition, HashSet<ChessMove> promotionMoves, ArrayList<ChessMove> availableMoves) {
         if (curRow < 9 && curRow > 0) {
             ChessPosition availablePosition = new ChessPosition(curRow, curCol);
             if (board.getPiece(availablePosition) != null) {

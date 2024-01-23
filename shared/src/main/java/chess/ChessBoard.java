@@ -10,8 +10,9 @@ import java.util.Arrays;
  */
 public class ChessBoard {
     private ChessPiece[][] squares = new ChessPiece[8][8];
+
     public ChessBoard() {
-        
+
     }
 
     /**
@@ -21,7 +22,11 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-         squares[position.getRow()-1][position.getColumn()-1] = piece;
+        squares[position.getRow() - 1][position.getColumn() - 1] = piece;
+    }
+
+    public void removePiece(ChessPosition position) {
+        squares[position.getRow() - 1][position.getColumn() - 1] = null;
     }
 
     /**
@@ -32,15 +37,72 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return squares[position.getRow()-1][position.getColumn()-1];
+        return squares[position.getRow() - 1][position.getColumn() - 1];
     }
 
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
+    private ChessPiece whiteRoyalPiece(int row, int col) {
+        if (col == 1 || col == 8) {
+            return new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+        } else if (col == 2 || col == 7) {
+            return new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        } else if (col == 3 || col == 6) {
+            return new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+        } else if (col == 4) {
+            return new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+        } else if (col == 5) {
+            return new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
+        } else throw new RuntimeException("OUT OF BOUNDS");
+    }
+
+    private ChessPiece blackRoyalPiece(int row, int col) {
+        if (col == 1 || col == 8) {
+            return new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+        } else if (col == 2 || col == 7) {
+            return new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
+        } else if (col == 3 || col == 6) {
+            return new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
+        } else if (col == 4) {
+            return new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
+        } else if (col == 5) {
+            return new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
+        } else throw new RuntimeException("OUT OF BOUNDS");
+    }
+
+    private void resetPieces(int row, int col) {
+        if (col == 8) {
+            if (row == 8) {
+                return;
+            } else {
+                col = 0;
+                row++;
+            }
+        }
+        col++;
+        ChessPosition position = new ChessPosition(row, col);
+        removePiece(position);
+        ChessPiece piece = null;
+        if (row == 1) {
+            piece = whiteRoyalPiece(row, col);
+        } else if (row == 2) {
+            piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        } else if (row == 7) {
+            piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+            ;
+        } else if (row == 8) {
+            piece = blackRoyalPiece(row, col);
+        }
+        addPiece(position, piece);
+        resetPieces(row, col);
+    }
+
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        int row = 1;
+        int col = 0;
+        resetPieces(row, col);
     }
 
     @Override

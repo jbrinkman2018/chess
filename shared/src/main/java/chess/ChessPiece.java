@@ -94,4 +94,7 @@ public class ChessPiece {
     public int hashCode() {
         return Objects.hash(type, pieceColor);
     }
+    public String toString() {
+        return String.format("Piece [%s, %s] ", type, pieceColor);
+    }
 }
