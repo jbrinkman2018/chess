@@ -1,22 +1,19 @@
 package chess.PieceMovesCalculators;
 
 import chess.ChessBoard;
+import chess.ChessMove;
 import chess.ChessPosition;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class KingMovesCalculator implements PieceMovesCalculator{
     @Override
-    public ArrayList<chess.ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition) {
-
-        int myPosRow = myPosition.getRow();
-        int myPosCol = myPosition.getColumn();
+    public Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition) {
         ArrayList<chess.ChessMove> availableMoves = new ArrayList<>();
 
-
-        // debug this
-        for (int curRow = myPosRow-1; curRow < myPosRow+1; curRow++) {
-            for (int curCol = myPosCol -1; curCol < myPosCol+1; curCol++){
+        for (int curRow = myPosition.getRow()-1; curRow < myPosition.getRow()+2; curRow++) {
+            for (int curCol = myPosition.getColumn() -1; curCol < myPosition.getColumn()+2; curCol++){
                 if (curCol > 0 && curCol < 9 && curRow > 0 && curRow < 9) {
                     ChessPosition availablePosition = new ChessPosition(curRow, curCol);
                     if (board.getPiece(availablePosition) != null) {
@@ -33,7 +30,6 @@ public class KingMovesCalculator implements PieceMovesCalculator{
                 }
             }
         }
-
         return availableMoves;
     }
 }

@@ -3,11 +3,15 @@ package chess.PieceMovesCalculators;
 import chess.ChessBoard;
 import chess.ChessPosition;
 
+import java.util.Collection;
 import java.util.ArrayList;
 
-public class QueenMovesCalculator implements PieceMovesCalculator {
+public class QueenMovesCalculator extends BasicPieceMoves {
     @Override
-    public ArrayList<chess.ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<>();
+    public Collection<chess.ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<chess.ChessMove> availableMoves = new ArrayList<>();
+        availableMoves = bishopMoves(board, myPosition);
+
+        return availableMoves;
     }
 }
