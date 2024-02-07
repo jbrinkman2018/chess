@@ -87,8 +87,6 @@ public class ChessGame {
         if (validMoves.contains(move)) {
             if (board.getPiece(move.getStartPosition()).getTeamColor() == teamTurn) {
 
-//                ChessBoard copyBoard = deepCopyBoard();
-
                 if (move.getPromotionPiece() != null) {
                     board.addPiece(move.getEndPosition(), new ChessPiece(teamTurn, move.getPromotionPiece()));
                 }
@@ -97,10 +95,6 @@ public class ChessGame {
                 }
                 board.removePiece(move.getStartPosition());
 
-//                if (isInCheck(teamTurn)){
-//                    retractMove(copyBoard);
-//                    throw new InvalidMoveException("Moved into Check");
-//                }
                 if (teamTurn == TeamColor.WHITE){
                     setTeamTurn(TeamColor.BLACK);
                 }
@@ -157,9 +151,6 @@ public class ChessGame {
                 }
             }
         }
-//        if (kingLocation == null){
-//            throw new InvalidMoveException("No King Found");
-//        }
         if (enemyEndPositions.contains(kingLocation)) {
             return true;
         }
