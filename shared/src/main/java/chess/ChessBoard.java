@@ -117,4 +117,23 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(squares);
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ChessBoard{");
+        sb.append("squares=");
+        for (int i = 0; i<8; i++){
+            for (int j = 0; j < 8; j++){
+                if (squares[i][j] != null) {
+                    sb.append("row = ");
+                    sb.append(Integer.toString(i));
+                    sb.append("col = ");
+                    sb.append(Integer.toString(j));
+                    sb.append(squares[i][j].toString());
+                }
+            }
+        }
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -80,10 +80,14 @@ public class PawnMovesCalculator implements PieceMovesCalculator{
                 addNormalMove(curRow, curCol, board, myPosition, availableMoves); // normal move one forward
             }
             curRow = myPosRow+1;
-            curCol--;
-            addCapture(curRow, curCol, board, myPosition, promotionMoves, availableMoves);
-            curCol+=2;
-            addCapture(curRow, curCol, board, myPosition, promotionMoves, availableMoves);
+            if (curCol>1) {
+                curCol--;
+                addCapture(curRow, curCol, board, myPosition, promotionMoves, availableMoves);
+            }
+            if (curCol <7) {
+                curCol += 2;
+                addCapture(curRow, curCol, board, myPosition, promotionMoves, availableMoves);
+            }
         }
         else { // BLACK moves
             curRow --;
@@ -94,12 +98,15 @@ public class PawnMovesCalculator implements PieceMovesCalculator{
                 addNormalMove(curRow, curCol, board, myPosition, availableMoves); // normal pawn move
             }
             curRow = myPosRow -1;
-            curCol--;
-            addCapture(curRow, curCol, board, myPosition, promotionMoves, availableMoves);
-            curCol+=2;
-            addCapture(curRow, curCol, board, myPosition, promotionMoves, availableMoves);
+            if (curCol>1) {
+                curCol--;
+                addCapture(curRow, curCol, board, myPosition, promotionMoves, availableMoves);
+            }
+            if (curCol<7) {
+                curCol += 2;
+                addCapture(curRow, curCol, board, myPosition, promotionMoves, availableMoves);
+            }
         }
-
         if (promotionMoves.isEmpty()) return availableMoves;
         else return promotionMoves;
     }
