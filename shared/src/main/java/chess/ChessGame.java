@@ -210,6 +210,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        teamTurn = teamColor;
         Collection<ChessMove> totalAvailableMoves = new HashSet<ChessMove>();
         for (int row = 1; row<9;row++) {
             for (int col = 1; col < 9;col++) {
@@ -221,12 +222,15 @@ public class ChessGame {
                 }
             }
         }
-        if (totalAvailableMoves.isEmpty()){
-            return true;
+        for (ChessMove curMove: totalAvailableMoves) {
+            try {
+                makeMove(curMove);
+                return false;
+            }
+            catch(InvalidMoveException e){
+            }
         }
-        else {
-            return false;
-        }
+        return true;
     }
 
     /**
