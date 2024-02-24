@@ -1,22 +1,21 @@
 package server;
 
-import spark.*;
 import com.google.gson.Gson;
+import dataAccess.DataAccessException;
+import spark.*;
 import model.*;
 import services.*;
-import dataAccess.*;
+
+import java.util.zip.DataFormatException;
+
 
 public class Server {
-    private services.Service service;
-    public Server() {}
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
-//        Spark.staticFiles.location("/web");
-        Spark.externalStaticFileLocation("/Users/jaredbrinkman/Documents/web");
-        Spark.before(this::filter);
-//        Spark.notFound("<html><body>My custom 404 page</body></html>");
+        Spark.staticFiles.location("web");
+//        Spark.init();
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::registration);
@@ -27,10 +26,8 @@ public class Server {
 //        Spark.post("/game", this::createGame);
 //        Spark.put("/game", this::joinGame);
 //        Spark.delete("/db", this::clear);\
-//        Spark.exception(Response.class, this::exceptionHandler);
-        Spark.notFound("<html><body>My custom 404 page</body></html>");
+        Spark.exception(DataAccessException.class, this::exceptionHandler);
 
-//        Spark.init();
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -40,17 +37,20 @@ public class Server {
         Spark.awaitStop();
     }
 
-
-    private Object registration (Request req, Response res) {
+    private Object registration (Request req, Response res) throws DataAccessException {
         var user = new Gson().fromJson(req.body(), User.class);
-        service = new RegisterService();
+        var service = new RegisterService();
         String authToken = service.register(user);
         return new Gson().toJson(authToken);
     }
-    private Object filter (Request req, Response res){
-        System.out.println("yipee");
-        return "empty";
+    private void exceptionHandler(DataAccessException ex, Request req, Response res){
+        res.status(ex.getStatusCode());
+        res.body(ex.getMessage());
     }
+//    private Object filter (Request req, Response res){
+//        System.out.println("yipee");
+//        return "empty";
+//    }
 //    private Object login (Request req, Response res) {
 //        return
 //    }

@@ -1,21 +1,19 @@
-import chess.*;
+import dataAccess.DataAccessException;
 import server.*;
+
 
 public class ServerMain {
     public static void main(String[] args) {
+        int port = 0;
         try {
 //        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
 //        System.out.println("♕ 240 Chess Server: " + piece);
-
-    int port = 8080;
-//        int (args.length >=1) {
-//            port = Integer.parseInt(args[0]);
-//        }
-    var server = new Server().run(port);
-
+            port = 8081;
+            var server = new Server().run(port);
         }
-        catch (Throwable error) {
-            System.out.printf("Unable to start server: %s%n", error.getMessage());
+        catch (Throwable ex) {
+            System.out.printf("Unable to run server: %s%n", ex.getMessage());
         }
+        System.out.printf("Chess Server: %d", port);
     }
 }
