@@ -1,19 +1,19 @@
 import dataAccess.DataAccessException;
 import server.*;
+import dataAccess.*;
 
 
 public class ServerMain {
     public static void main(String[] args) {
         int port = 0;
         try {
-//        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-//        System.out.println("♕ 240 Chess Server: " + piece);
             port = 8081;
             var server = new Server().run(port);
+//            var server = new Server(new MemoryUserDAO(), new MemoryAuthDAO(), new MemoryGameDAO()).run(port);
         }
         catch (Throwable ex) {
-            System.out.printf("Unable to run server: %s%n", ex.getMessage());
+            System.out.println("Unable to start server");
         }
-        System.out.printf("Chess Server: %d", port);
+//        System.out.printf("Chess Server: %d", port);
     }
 }
