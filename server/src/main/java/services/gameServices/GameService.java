@@ -13,8 +13,8 @@ public abstract class GameService implements Service {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
     }
-    public void verifyAuth(Auth auth) throws DataAccessException{
-        if (authDAO.getAuth(auth.getAuthToken()) == null) {
+    public void verifyAuth(String auth) throws DataAccessException{
+        if (authDAO.getAuth(auth) == null) {
             throw new DataAccessException(401, "Error: unauthorized");
         }
     }

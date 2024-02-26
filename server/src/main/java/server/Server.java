@@ -2,20 +2,20 @@ package server;
 
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
-import dataAccess.authDAOs.AuthDAO;
-import dataAccess.authDAOs.MemoryAuthDAO;
-import dataAccess.gameDAOs.GameDAO;
-import dataAccess.gameDAOs.MemoryGameDAO;
-import dataAccess.userDAOs.MemoryUserDAO;
-import dataAccess.userDAOs.UserDAO;
+import dataAccess.authDAOs.*;
+import dataAccess.gameDAOs.*;
+import dataAccess.userDAOs.*;
 import services.gameServices.*;
 import services.*;
-import services.userServices.LoginService;
-import services.userServices.LogoutService;
-import services.userServices.RegisterService;
+import services.userServices.*;
 import spark.*;
 import model.*;
 import spark.Response;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Collection;
 
 public class Server {
     public Server() {}
@@ -40,7 +40,7 @@ public class Server {
         Spark.delete("/session", this::logout);
         Spark.get("/game", this::listGames);
         Spark.post("/game", this::createGame);
-//        Spark.put("/game", this::joinGame);
+        Spark.put("/game", this::joinGame);
         Spark.delete("/db", this::clear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
 
@@ -52,58 +52,69 @@ public class Server {
         Spark.stop();
         Spark.awaitStop();
     }
-    private Object registration (Request req, Response res) throws DataAccessException {
+    private Object registration (Request req, Response res) throws DataAccessException{
         var user = new Gson().fromJson(req.body(), User.class);
         var service = new RegisterService(userDAO, authDAO);
         authOutput = service.register(user);
+        res.type("application/json");
         return new Gson().toJson(authOutput);
     }
     private Object login (Request req, Response res) throws DataAccessException{
         var user = new Gson().fromJson(req.body(), User.class);
         var service = new LoginService(userDAO, authDAO);
         authOutput = service.login(user);
+        res.type("application/json");
         return new Gson().toJson(authOutput);
     }
     private Object logout (Request req, Response res) throws DataAccessException{
-        var auth = new Gson().fromJson(req.headers("Authorization"), Auth.class);
+        var auth = req.headers("Authorization");
         var service = new LogoutService(userDAO, authDAO);
         service.logout(auth);
         res.status(200);
-        return new Gson().toJson("{}");
-//        return "{}";
+        res.type("application/json");
+        return "{}";
     }
 
     private Object listGames(Request req, Response res) throws DataAccessException {
-        var auth = new Gson().fromJson(req.headers("Authorization"), Auth.class); // change req.body to req.headers
+        var auth = req.headers("Authorization");
         var service = new ListGamesService(gameDAO, authDAO);
         service.verifyAuth(auth);
-        return new Gson().toJson(service.listGames().toArray());
+        res.type("application/json");
+        var list = service.listGames().toArray();
+        return new Gson().toJson(Map.of("games", list));
     }
 
     private Object createGame(Request req, Response res) throws DataAccessException{
+        var auth = req.headers("Authorization");
         var game = new Gson().fromJson(req.body(), Game.class);
-        var auth = new Gson().fromJson(req.headers("Authorization"), Auth.class); // change req.body to req.headers
         var service = new CreateGameService(gameDAO, authDAO);
         service.verifyAuth(auth);
-        return new Gson().toJson(service.createGame(game));
+        res.type("application/json");
+        return new Gson().toJson(Map.of("gameID", service.createGame(game)));
     }
 
-//    private Object joinGame(Request req, Response res) {
-//        return
-//    }
+    private Object joinGame(Request req, Response res) throws DataAccessException {
+        var auth = req.headers("Authorization");
+        var playerJoinGame = new Gson().fromJson(req.body(),JoinGameInfo.class);
+        var service = new JoinGameService(gameDAO, authDAO);
+        service.verifyAuth(auth);
+        service.joinGame(playerJoinGame.getGameID(), playerJoinGame.getPlayerColor());
+        res.status(200);
+        return "{}";
+    }
 
     private Object clear(Request req, Response res) {
         var service = new ClearService(userDAO, authDAO, gameDAO);
         service.clear();
         res.status(200);
-        return "";
+        res.type("application/json");
+        return "{}";
     }
-    private void exceptionHandler(DataAccessException ex, Request req, Response res){
-        res.halt(ex.getStatusCode(), ex.getMessage());
-//        res.status(ex.getStatusCode());
-//        StringBuilder errorMessage = new StringBuilder();
-//        errorMessage.append("message : ");
-//        errorMessage.append(ex.getMessage());
-//        res.body(new Gson().toJson(ex.getStatusCode()));
+    private Object exceptionHandler(DataAccessException ex, Request req, Response res){
+//        res.halt(ex.getStatusCode(), ex.getMessage());
+        res.status(ex.getStatusCode());
+        var body = new Gson().toJson(Map.of("message", String.format("Error: %s", ex.getMessage())));
+        res.body(body);
+        return new Gson().toJson(body);
     }
 }

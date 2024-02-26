@@ -15,7 +15,7 @@ public class SQLGameDAO implements GameDAO{
         return 0;
     }
     @Override
-    public void clear(){
-
-    }
+    public void clear(){}
+    @Override
+    public void joinGame(int gameID, String playerColor) {}
 }

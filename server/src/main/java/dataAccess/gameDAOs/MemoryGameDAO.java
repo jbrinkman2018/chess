@@ -26,4 +26,9 @@ public class MemoryGameDAO implements GameDAO {
     public void clear(){
         games.clear();
     }
+    @Override
+    public void joinGame(int gameID, String playerColor) {
+        Game myGame = games.get(gameID);
+    }
+
 }

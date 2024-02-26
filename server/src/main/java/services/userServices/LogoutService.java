@@ -9,7 +9,7 @@ public class LogoutService extends UserService{
     public LogoutService(UserDAO userDAO, AuthDAO authDAO){
         super(userDAO, authDAO);
     }
-    public void logout(Auth auth) throws DataAccessException {
-        authDAO.deleteAuth(auth.getAuthToken());
+    public void logout(String auth) throws DataAccessException {
+        authDAO.deleteAuth(auth);
     }
 }

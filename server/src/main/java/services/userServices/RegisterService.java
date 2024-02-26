@@ -17,8 +17,7 @@ public class RegisterService extends UserService{
             throw new DataAccessException(403, "Error: already taken");
         }
         userDAO.createUser(user);
-        String myAuthToken = authDAO.createAuth(user.getUsername());
-        return authDAO.getAuth(myAuthToken);
+        return authDAO.createAuth(user.getUsername());
     }
 
 }

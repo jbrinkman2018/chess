@@ -9,11 +9,11 @@ public class MemoryAuthDAO implements AuthDAO{
     private final HashMap<String, Auth> authUsers = new HashMap<>();
 
     @Override
-    public String createAuth(String username) {
+    public Auth createAuth(String username) {
         String authToken = UUID.randomUUID().toString();
         Auth myAuth = new Auth(username, authToken);
         authUsers.put(authToken, myAuth);
-        return myAuth.getAuthToken();
+        return myAuth;
     }
     @Override
     public void deleteAuth(String authToken){

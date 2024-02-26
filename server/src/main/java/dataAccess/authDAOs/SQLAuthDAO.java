@@ -4,8 +4,8 @@ import model.*;
 public class SQLAuthDAO implements AuthDAO {
 
     @Override
-    public String createAuth(String username) {
-        return "null";
+    public Auth createAuth(String username) {
+        return new Auth("null", "null");
     }
     @Override
     public void deleteAuth(String authToken){}
