@@ -1,5 +1,4 @@
 package server;
-
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.authDAOs.*;
@@ -12,7 +11,6 @@ import spark.*;
 import model.*;
 import spark.Response;
 import java.util.Map;
-
 public class Server {
     public Server() {}
     private final UserDAO userDAO = new MemoryUserDAO();
@@ -60,7 +58,6 @@ public class Server {
         res.type("application/json");
         return "{}";
     }
-
     private Object listGames(Request req, Response res) throws DataAccessException {
         var auth = req.headers("Authorization");
         var service = new ListGamesService(gameDAO, authDAO);
@@ -69,7 +66,6 @@ public class Server {
         var list = service.listGames().toArray();
         return new Gson().toJson(Map.of("games", list));
     }
-
     private Object createGame(Request req, Response res) throws DataAccessException{
         var auth = req.headers("Authorization");
         var game = new Gson().fromJson(req.body(), Game.class);
@@ -78,7 +74,6 @@ public class Server {
         res.type("application/json");
         return new Gson().toJson(Map.of("gameID", service.createGame(game)));
     }
-
     private Object joinGame(Request req, Response res) throws DataAccessException {
         var auth = req.headers("Authorization");
         var playerJoinGame = new Gson().fromJson(req.body(), JoinRequest.class);
@@ -89,7 +84,6 @@ public class Server {
         res.status(200);
         return "{}";
     }
-
     private Object clear(Request req, Response res) {
         var service = new ClearService(userDAO, authDAO, gameDAO);
         service.clear();

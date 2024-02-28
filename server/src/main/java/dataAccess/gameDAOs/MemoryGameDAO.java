@@ -13,8 +13,6 @@ public class MemoryGameDAO implements GameDAO {
     private int gameIDTally = 1;
     @Override
     public Collection<Game> listGames(){
-        Collection<Game> myGames = new ArrayList<>();
-        Collection<Game> values = games.values();
         return games.values();
     }
     @Override
