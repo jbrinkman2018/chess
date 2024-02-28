@@ -11,11 +11,7 @@ import services.userServices.*;
 import spark.*;
 import model.*;
 import spark.Response;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Map;
-import java.util.Collection;
 
 public class Server {
     public Server() {}
@@ -23,18 +19,9 @@ public class Server {
     private final AuthDAO authDAO = new MemoryAuthDAO();
     private final GameDAO gameDAO = new MemoryGameDAO();
     private Auth authOutput;
-//    public Server(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO){
-//        this.userDAO = userDAO;
-//        this.authDAO = authDAO;
-//        this.gameDAO = gameDAO;
-//    }
-
     public int run(int desiredPort) {
         Spark.port(desiredPort);
-
         Spark.staticFiles.location("web");
-
-        // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::registration);
         Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
@@ -43,11 +30,9 @@ public class Server {
         Spark.put("/game", this::joinGame);
         Spark.delete("/db", this::clear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
-
         Spark.awaitInitialization();
         return Spark.port();
     }
-
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
@@ -69,6 +54,7 @@ public class Server {
     private Object logout (Request req, Response res) throws DataAccessException{
         var auth = req.headers("Authorization");
         var service = new LogoutService(userDAO, authDAO);
+        service.verifyAuth(auth);
         service.logout(auth);
         res.status(200);
         res.type("application/json");
@@ -95,10 +81,11 @@ public class Server {
 
     private Object joinGame(Request req, Response res) throws DataAccessException {
         var auth = req.headers("Authorization");
-        var playerJoinGame = new Gson().fromJson(req.body(),JoinGameInfo.class);
+        var playerJoinGame = new Gson().fromJson(req.body(), JoinRequest.class);
         var service = new JoinGameService(gameDAO, authDAO);
         service.verifyAuth(auth);
-        service.joinGame(playerJoinGame.getGameID(), playerJoinGame.getPlayerColor());
+        service.verifyGameID(playerJoinGame.gameID());
+        service.joinGame(playerJoinGame.gameID(), playerJoinGame.playerColor(), service.getUsername(auth));
         res.status(200);
         return "{}";
     }
@@ -111,7 +98,6 @@ public class Server {
         return "{}";
     }
     private Object exceptionHandler(DataAccessException ex, Request req, Response res){
-//        res.halt(ex.getStatusCode(), ex.getMessage());
         res.status(ex.getStatusCode());
         var body = new Gson().toJson(Map.of("message", String.format("Error: %s", ex.getMessage())));
         res.body(body);

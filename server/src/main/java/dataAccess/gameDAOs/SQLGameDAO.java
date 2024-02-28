@@ -1,5 +1,6 @@
 package dataAccess.gameDAOs;
 
+import chess.ChessGame;
 import model.Game;
 
 import java.util.ArrayList;
@@ -17,5 +18,9 @@ public class SQLGameDAO implements GameDAO{
     @Override
     public void clear(){}
     @Override
-    public void joinGame(int gameID, String playerColor) {}
+    public void updateGame(int gameID, ChessGame.TeamColor playerColor, String username) {}
+    @Override
+    public Game getGame(int gameID){
+        return new Game("null",0,"null","null",new ChessGame());
+    }
 }

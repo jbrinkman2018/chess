@@ -9,11 +9,9 @@ public class ServerMain {
         try {
             port = 8081;
             var server = new Server().run(port);
-//            var server = new Server(new MemoryUserDAO(), new MemoryAuthDAO(), new MemoryGameDAO()).run(port);
         }
         catch (Throwable ex) {
             System.out.println("Unable to start server");
         }
-//        System.out.printf("Chess Server: %d", port);
     }
 }

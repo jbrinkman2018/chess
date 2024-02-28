@@ -17,12 +17,10 @@ public class MemoryAuthDAO implements AuthDAO{
     }
     @Override
     public void deleteAuth(String authToken){
-        // check and throw error if authToken is not valid
         authUsers.remove(authToken);
     }
     @Override
     public Auth getAuth(String authToken){
-        // check and throw error if authToken is not valid
         return authUsers.get(authToken);
     }
     @Override

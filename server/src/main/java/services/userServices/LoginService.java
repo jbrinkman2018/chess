@@ -12,13 +12,13 @@ public class LoginService extends UserService{
         super(userDAO, authDAO);
     }
     public Auth login(User user) throws DataAccessException {
-        if (user.getUsername() == null || user.getPassword() == null) {
+        if (user.username() == null || user.password() == null) {
             throw new DataAccessException(400, "Error: bad request");
         }
-        if (userDAO.getUser(user.getUsername()) == null) {
+        if (userDAO.getUser(user.username()) == null) {
             throw new DataAccessException(401, "Error: unauthorized");
         }
-        if (!user.getPassword().equals(userDAO.getUser(user.username()).getPassword())) {
+        if (!user.password().equals(userDAO.getUser(user.username()).password())) {
             throw new DataAccessException(401, "Error: unauthorized");
         }
         return authDAO.createAuth(user.username());
