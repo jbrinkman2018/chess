@@ -189,11 +189,10 @@ public class ServiceTests {
             var service = new CreateGameService(gameDAO, authDAO);
             String gameName = "game";
             Game game = new Game(gameName, 1, "null", "null", null);
-            gameDAO.createGame(game);
             Auth auth = authDAO.createAuth("userName");
             service.verifyAuth(auth.authToken());
-            int gameID = service.createGame()
-            assertEquals(gameID, gameDAO.getGame(gameID), "game not saved");
+            int gameID = service.createGame(game);
+            assertEquals(gameID, gameDAO.getGame(gameID).gameID(), "game not saved");
         }
         catch(DataAccessException ex){
             System.out.println("login unit test didn't make it to assert equals");
@@ -203,28 +202,55 @@ public class ServiceTests {
     @Test
     @DisplayName("create Game Negative Unit Test")
     public void createNegUnitTest(){
+        var service = new CreateGameService(gameDAO, authDAO);
+        String gameName = "game";
+        Game game = new Game(gameName, 1, "null", "null", null);
+        Auth auth = authDAO.createAuth("userName");
+        int gameID = 200;
         try {
-            var service = new CreateGameService(gameDAO, authDAO);
+            service.verifyAuth(auth.authToken());
+            gameID = service.createGame(game);
+        }
+        catch (DataAccessException exception){
+            assertNotEquals(gameID, gameDAO.getGame(gameID).gameID(), "unauthorization failed");
+        }
+    }
+
+    @Test
+    @DisplayName("join Game Positive Unit Test")
+    public void joinPosUnitTest(){
+        try {
+            var service = new JoinGameService(gameDAO, authDAO);
             String gameName = "game";
             Game game = new Game(gameName, 1, "null", "null", null);
-            gameDAO.createGame(game);
             Auth auth = authDAO.createAuth("userName");
-            service.verifyAuth(auth.authToken());
-            int gameID = service.createGame()
-            assertEquals(gameID, gameDAO.getGame(gameID), "game not saved");
+            gameDAO.createGame(game);
+            int gameID = 1;
+            service.joinGame(gameID, ChessGame.TeamColor.WHITE, "white");
+            assertEquals("white", gameDAO.getGame(gameID).whiteUsername(), "didn't add username");
         }
-        catch(DataAccessException ex){
-            System.out.println("login unit test didn't make it to assert equals");
+        catch (DataAccessException ex){
+            System.out.println("Didn't make it to test cases");
         }
     }
 
     @Test
     @DisplayName("join Game Negative Unit Test")
-    public void joinPosUnitTest(){}
-
-    @Test
-    @DisplayName("join Game Positive Unit Test")
-    public void joinNegUnitTest(){}
+    public void joinNegUnitTest(){
+        var service = new JoinGameService(gameDAO, authDAO);
+        String gameName = "game";
+        Game game = new Game(gameName, 1, "null", "null", null);
+        Auth auth = authDAO.createAuth("userName");
+        gameDAO.createGame(game);
+        int gameID = 1;
+        try {
+            service.verifyAuth(auth.authToken());
+            service.joinGame(gameID, ChessGame.TeamColor.WHITE, "white");
+        }
+        catch (DataAccessException exception){
+            assertNotEquals("white", gameDAO.getGame(gameID).whiteUsername(), "unauthorization failed");
+        }
+    }
 
     @Test
     @DisplayName("clear Unit Test")
