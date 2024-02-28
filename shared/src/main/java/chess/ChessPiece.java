@@ -54,7 +54,6 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    // pretty similar code here I think we could shorten
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         if(getPieceType().equals(PieceType.KING)) {
             PieceMovesCalculator kingInterface = new KingMovesCalculator();
@@ -95,9 +94,6 @@ public class ChessPiece {
     public int hashCode() {
         return Objects.hash(type, pieceColor);
     }
-//    public String toString() {
-//        return String.format("Piece [%s, %s] ", type, pieceColor);
-//    }
 
     @Override
     public String toString() {

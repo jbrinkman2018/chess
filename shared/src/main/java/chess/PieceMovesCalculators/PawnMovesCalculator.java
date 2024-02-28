@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Collection;
 
-public class PawnMovesCalculator implements PieceMovesCalculator{
+public class PawnMovesCalculator extends BasicPieceMoves{
     private void addNormalMove(int curRow, int curCol, ChessBoard board, ChessPosition myPosition, ArrayList<chess.ChessMove> availableMoves) {
         if (curRow < 8 && curRow >1) {
             ChessPosition availablePosition = new ChessPosition(curRow, curCol);

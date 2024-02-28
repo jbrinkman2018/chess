@@ -198,9 +198,6 @@ public class ChessGame {
                     catch (InvalidMoveException e){
                         System.out.println(e.getMessage());
                     }
-//                    finally{
-//                        retractMove(escapeMove);
-//                    }
                 }
             }
             return true;

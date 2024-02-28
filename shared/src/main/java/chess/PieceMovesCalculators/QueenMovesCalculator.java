@@ -11,7 +11,7 @@ public class QueenMovesCalculator extends BasicPieceMoves {
     public Collection<chess.ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<chess.ChessMove> availableMoves = new ArrayList<>();
         availableMoves.addAll(bishopMoves(board, myPosition));
-        availableMoves.addAll(RookMoves(board, myPosition));
+        availableMoves.addAll(rookMoves(board, myPosition));
         return availableMoves;
     }
 }

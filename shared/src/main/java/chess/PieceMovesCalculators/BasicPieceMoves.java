@@ -9,11 +9,11 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 public abstract class BasicPieceMoves implements PieceMovesCalculator {
-    public enum horizDirection {
+    public enum HorizDirection {
         LEFT,
         RIGHT,
     }
-    public enum vertDirection {
+    public enum VertDirection {
         UP,
         DOWN,
     }
@@ -117,12 +117,12 @@ public abstract class BasicPieceMoves implements PieceMovesCalculator {
        }
     }
 
-   public Collection<ChessMove> moveHorizontalIndefinite(ChessBoard board, ChessPosition myPosition, horizDirection direction, int curRow, int curCol, Collection<chess.ChessMove> availableMoves) {
-       if ((curCol== 1 && direction == horizDirection.LEFT) || (curCol == 8 && direction == horizDirection.RIGHT)) {
+   public Collection<ChessMove> moveHorizontalIndefinite(ChessBoard board, ChessPosition myPosition, HorizDirection direction, int curRow, int curCol, Collection<chess.ChessMove> availableMoves) {
+       if ((curCol== 1 && direction == HorizDirection.LEFT) || (curCol == 8 && direction == HorizDirection.RIGHT)) {
            return availableMoves;
        }
        else {
-           if (direction == horizDirection.LEFT) {
+           if (direction == HorizDirection.LEFT) {
                curCol--;
            }
            else {
@@ -137,12 +137,12 @@ public abstract class BasicPieceMoves implements PieceMovesCalculator {
        }
    }
 
-   public Collection<ChessMove> moveVertIndefinite(ChessBoard board, ChessPosition myPosition, vertDirection direction, int curRow, int curCol, Collection<chess.ChessMove> availableMoves) {
-       if ((curRow== 1 && direction == vertDirection.DOWN) || (curRow == 8 && direction == vertDirection.UP)){
+   public Collection<ChessMove> moveVertIndefinite(ChessBoard board, ChessPosition myPosition, VertDirection direction, int curRow, int curCol, Collection<chess.ChessMove> availableMoves) {
+       if ((curRow== 1 && direction == VertDirection.DOWN) || (curRow == 8 && direction == VertDirection.UP)){
            return availableMoves;
        }
        else {
-           if (direction == vertDirection.UP) {
+           if (direction == VertDirection.UP) {
                curRow++;
            }
            else {
@@ -157,16 +157,33 @@ public abstract class BasicPieceMoves implements PieceMovesCalculator {
        }
    }
 
-   public Collection<ChessMove> RookMoves(ChessBoard board, ChessPosition myPosition){
+   public Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition){
        ArrayList<chess.ChessMove> availableMoves = new ArrayList<>();
        int curRow = myPosition.getRow();
        int curCol = myPosition.getColumn();
-       availableMoves.addAll(moveVertIndefinite(board, myPosition, vertDirection.UP, curRow, curCol, availableMoves));
-       availableMoves.addAll(moveVertIndefinite(board, myPosition, vertDirection.DOWN, curRow, curCol, availableMoves));
-       availableMoves.addAll(moveHorizontalIndefinite(board, myPosition, horizDirection.LEFT, curRow, curCol, availableMoves));
-       availableMoves.addAll(moveHorizontalIndefinite(board, myPosition, horizDirection.RIGHT, curRow, curCol, availableMoves));
+       availableMoves.addAll(moveVertIndefinite(board, myPosition, VertDirection.UP, curRow, curCol, availableMoves));
+       availableMoves.addAll(moveVertIndefinite(board, myPosition, VertDirection.DOWN, curRow, curCol, availableMoves));
+       availableMoves.addAll(moveHorizontalIndefinite(board, myPosition, HorizDirection.LEFT, curRow, curCol, availableMoves));
+       availableMoves.addAll(moveHorizontalIndefinite(board, myPosition, HorizDirection.RIGHT, curRow, curCol, availableMoves));
        return availableMoves;
    }
    @Override
    public abstract Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition);
+
+    public void addMove(int curRow, int curCol, ChessBoard board, ChessPosition myPosition, ArrayList<chess.ChessMove> availableMoves) {
+        if (curRow > 0 && curRow < 9 && curCol > 0 && curCol < 9){
+            ChessPosition availablePosition = new ChessPosition(curRow, curCol);
+            if (board.getPiece(availablePosition) != null) {
+                if (board.getPiece(availablePosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {}
+                else {
+                    chess.ChessMove availableMove = new chess.ChessMove(myPosition,availablePosition,null);
+                    availableMoves.add(availableMove);
+                }
+            }
+            else {
+                chess.ChessMove availableMove = new chess.ChessMove(myPosition, availablePosition, null);
+                availableMoves.add(availableMove);
+            }
+        }
+    }
 }
