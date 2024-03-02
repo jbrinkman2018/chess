@@ -13,9 +13,9 @@ import spark.Response;
 import java.util.Map;
 public class Server {
     public Server() {}
-    private final UserDAO userDAO = new MemoryUserDAO();
-    private final AuthDAO authDAO = new MemoryAuthDAO();
-    private final GameDAO gameDAO = new MemoryGameDAO();
+    private final UserDAO userDAO = new SQLUserDAO();
+    private final AuthDAO authDAO = new SQLAuthDAO();
+    private final GameDAO gameDAO = new SQLGameDAO();
     private Auth authOutput;
     public int run(int desiredPort) {
         Spark.port(desiredPort);
