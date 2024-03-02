@@ -6,10 +6,13 @@ package dataAccess;
 public class DataAccessException extends Exception{
     private int statusCode;
     private String message;
-
+// clean this up
     public DataAccessException(int statusCode, String message) {
-        this.statusCode = statusCode;
         this.message = message;
+        this.statusCode = statusCode;
+    }
+    public DataAccessException(String message){
+        super(message);
     }
     public int getStatusCode() {
         return statusCode;
