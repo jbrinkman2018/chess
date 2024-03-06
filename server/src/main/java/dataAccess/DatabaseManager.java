@@ -3,6 +3,8 @@ package dataAccess;
 import java.sql.*;
 import java.util.Properties;
 
+import model.*;
+
 public class DatabaseManager {
     private static final String databaseName;
     private static final String user;
@@ -58,6 +60,16 @@ public class DatabaseManager {
             }
         } catch (SQLException ex) {
             throw new DataAccessException(500, String.format("Unable to configure database: %s", ex.getMessage()));
+        }
+    }
+
+    public static void executeUpdate(String updateTable) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(updateTable)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(500, String.format("Unable to perform execute Update: %s", ex.getMessage()));
         }
     }
 

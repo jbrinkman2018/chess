@@ -1,17 +1,23 @@
 package dataAccess.gameDAOs;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
+import model.Auth;
 import model.Game;
+import java.util.HashMap;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 public class SQLGameDAO implements GameDAO{
+    private int gameIDTally = 1;
     public SQLGameDAO(){
         try {
-            DatabaseManager.createDatabase();
             DatabaseManager.configTable(createGameTable);
         }
         catch(DataAccessException ex) {
@@ -20,18 +26,83 @@ public class SQLGameDAO implements GameDAO{
     }
     @Override
     public Collection<Game> listGames(){
-        return new ArrayList<>();
+        var result = new ArrayList<Game>();
+        try {
+            try (var conn = DatabaseManager.getConnection()) {
+                var statement = "SELECT * FROM game";
+                try (var ps = conn.prepareStatement(statement)) {
+                    try (var rs = ps.executeQuery()) {
+                        while (rs.next()) {
+                            result.add(readGame(rs));
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                throw new DataAccessException(500, String.format("Unable to read data: %s", e.getMessage()));
+            }
+        }
+        catch (DataAccessException ex) {
+            System.out.println(String.format("Error:", ex.getMessage()));
+        }
+        return result;
     }
     @Override
     public int createGame(Game game) {
-        return 0;
+        int gameID = gameIDTally;
+        gameIDTally++;
+        Game myGame = new Game(game.gameName(), gameID, null, null, null);
+        String SQLCreateGame = "INSERT INTO game (gameName, gameID, whiteUsername, blackUsername, chessGame) VALUES ('"
+                + myGame.gameName() + "', '" + myGame.gameID() + "', '"
+                + myGame.whiteUsername() + "', '" + myGame.blackUsername() + "', '"
+                + myGame.game() + "')";
+        try {
+            DatabaseManager.executeUpdate(SQLCreateGame);
+        }
+        catch (DataAccessException ex) {
+            System.out.println(String.format("Error:", ex.getMessage()));
+        }
+        return gameID;
     }
     @Override
-    public void clear(){}
+    public void clear(){
+        String SQLClearGames = "DELETE FROM game";
+        try {
+            DatabaseManager.executeUpdate(SQLClearGames);
+        }
+        catch (DataAccessException ex) {
+            System.out.println(String.format("Error:", ex.getMessage()));
+        }
+        gameIDTally = 1;
+    }
     @Override
-    public void updateGame(int gameID, ChessGame.TeamColor playerColor, String username) {}
+    public void updateGame(int gameID, ChessGame.TeamColor playerColor, String username) {
+        String SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = '"
+                + username + "' WHERE gameID = " + gameID;
+        try {
+            DatabaseManager.executeUpdate(SQLUpdateGame);
+        }
+        catch (DataAccessException ex) {
+            System.out.println(String.format("Error:", ex.getMessage()));
+        }
+    }
     @Override
     public Game getGame(int gameID){
+        try {
+            try (var conn = DatabaseManager.getConnection()) {
+                var statement = "SELECT * FROM game WHERE gameID = '" + gameID + "'";
+                try (var ps = conn.prepareStatement(statement)) {
+                    try (var rs = ps.executeQuery()) {
+                        if (rs.next()) {
+                            return readGame(rs);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                throw new DataAccessException(500, String.format("Unable to read data: %s", e.getMessage()));
+            }
+        }catch (DataAccessException ex) {
+            System.out.println(String.format("Error:", ex.getMessage()));
+        }
         return new Game("null",0,"null","null",new ChessGame());
     }
 
@@ -42,9 +113,18 @@ public class SQLGameDAO implements GameDAO{
               `gameID` int NOT NULL AUTO_INCREMENT,
               `whiteUsername` varchar(256),
               `blackUsername` varchar(256),
-              `chessGame` varchar(256),
+              `chessGame` TEXT DEFAULT NULL,
               PRIMARY KEY (`gameID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
+    private Game readGame(ResultSet rs) throws SQLException {
+        var gameName = rs.getString("gameName");
+        var gameID = rs.getInt("gameID");
+        var whiteUsername = rs.getString("whiteUsername");
+        var blackUsername = rs.getString("blackUsername");
+        var jsonChessGame = rs.getString("chessGame");
+        var chessGame = new Gson().fromJson(jsonChessGame, ChessGame.class);
+        return new Game(gameName, gameID, whiteUsername, blackUsername, chessGame);
+    }
 }

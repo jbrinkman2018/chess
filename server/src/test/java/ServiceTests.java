@@ -13,6 +13,8 @@ import services.userServices.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import model.*;
+
+import javax.xml.crypto.Data;
 import java.util.Collection;
 
 public class ServiceTests {
@@ -201,7 +203,7 @@ public class ServiceTests {
 
     @Test
     @DisplayName("create Game Negative Unit Test")
-    public void createNegUnitTest(){
+    public void createNegUnitTest() throws DataAccessException{
         var service = new CreateGameService(gameDAO, authDAO);
         String gameName = "game";
         Game game = new Game(gameName, 1, "null", "null", null);
@@ -236,7 +238,7 @@ public class ServiceTests {
 
     @Test
     @DisplayName("join Game Negative Unit Test")
-    public void joinNegUnitTest(){
+    public void joinNegUnitTest() throws DataAccessException {
         var service = new JoinGameService(gameDAO, authDAO);
         String gameName = "game";
         Game game = new Game(gameName, 1, "null", "null", null);
@@ -254,7 +256,7 @@ public class ServiceTests {
 
     @Test
     @DisplayName("clear Unit Test")
-    public void clearUnitTest(){
+    public void clearUnitTest() throws DataAccessException{
         var service = new ClearService(userDAO, authDAO, gameDAO);
         String gameName = "game";
         Game game = new Game(gameName, 1, "null", "null", null);
