@@ -6,13 +6,11 @@ import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
 import model.Auth;
 import model.Game;
-import java.util.HashMap;
+
+import java.util.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.UUID;
 
 public class SQLGameDAO implements GameDAO{
     private int gameIDTally = 1;
@@ -75,17 +73,6 @@ public class SQLGameDAO implements GameDAO{
         gameIDTally = 1;
     }
     @Override
-    public void updateGame(int gameID, ChessGame.TeamColor playerColor, String username) {
-        String SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = '"
-                + username + "' WHERE gameID = " + gameID;
-        try {
-            DatabaseManager.executeUpdate(SQLUpdateGame);
-        }
-        catch (DataAccessException ex) {
-            System.out.println(String.format("Error:", ex.getMessage()));
-        }
-    }
-    @Override
     public Game getGame(int gameID){
         try {
             try (var conn = DatabaseManager.getConnection()) {
@@ -103,9 +90,31 @@ public class SQLGameDAO implements GameDAO{
         }catch (DataAccessException ex) {
             System.out.println(String.format("Error:", ex.getMessage()));
         }
-        return new Game("null",0,"null","null",new ChessGame());
+        return null;
     }
-
+    @Override
+    public void updateGame(int gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException{
+        if (playerColor == null) {
+        }
+        else {
+            String SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = '"
+                    + username + "' WHERE gameID = " + gameID;
+            if (playerColor != ChessGame.TeamColor.BLACK && playerColor != ChessGame.TeamColor.WHITE) {
+                return;
+            }
+            if ((!getGame(gameID).whiteUsername().equals("null")) && (playerColor == ChessGame.TeamColor.WHITE)) {
+                throw new DataAccessException(403, "already taken");
+            }
+            if ((!getGame(gameID).blackUsername().equals("null")) && (playerColor == ChessGame.TeamColor.BLACK)) {
+                throw new DataAccessException(403, "already taken");
+            }
+            try {
+                DatabaseManager.executeUpdate(SQLUpdateGame);
+            } catch (DataAccessException ex) {
+                System.out.println(String.format("Error:", ex.getMessage()));
+            }
+        }
+    }
     private final String[] createGameTable = {
             """
             CREATE TABLE IF NOT EXISTS  game (

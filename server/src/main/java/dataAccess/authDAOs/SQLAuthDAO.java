@@ -55,7 +55,7 @@ public class SQLAuthDAO implements AuthDAO {
         }catch (DataAccessException ex) {
             System.out.println(String.format("Error:", ex.getMessage()));
         }
-        return new Auth("null", "null");
+        return null;
     }
     @Override
     public void clear(){

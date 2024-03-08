@@ -201,7 +201,7 @@ public class dataAccessTests {
         Auth myAuth = authDAO.createAuth("newUser");
         authDAO.deleteAuth(myAuth.authToken());
         Auth gotAuth = authDAO.getAuth(myAuth.authToken());
-        assertNull(myAuth.authToken(), "did not delete auth");
+        assertNull(gotAuth,"did not delete auth");
     }
 
     @Test
@@ -301,7 +301,7 @@ public class dataAccessTests {
         GameDAO gameDAO = new SQLGameDAO();
         int gameID = gameDAO.createGame(new Game("newGameName", 1, null, null, null));
         var game =  gameDAO.getGame(gameID);
-        assertNotEquals("newGameName", game.gameName(),"game not imported");
+        assertEquals("newGameName", game.gameName(),"game not imported");
     }
 
     @Test
@@ -327,7 +327,7 @@ public class dataAccessTests {
         GameDAO gameDAO = new SQLGameDAO();
         int gameID = gameDAO.createGame(new Game("newGameName", 1, null, null, null));
         gameDAO.updateGame(gameID, ChessGame.TeamColor.BLACK, "newUser");
-        assertNotEquals("newUser",gameDAO.getGame(gameID).whiteUsername(), "game updated wrong color");
+        assertEquals("null",gameDAO.getGame(gameID).whiteUsername(), "game updated wrong color");
     }
 
     @Test
