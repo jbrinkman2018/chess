@@ -72,6 +72,22 @@ public class DatabaseManager {
             throw new DataAccessException(500, String.format("Unable to perform execute Update: %s", ex.getMessage()));
         }
     }
+    public static void createGameUpdate(String updateTable, Object ... params) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(updateTable)) {
+                for (var i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    if (param instanceof String p) preparedStatement.setString(i + 1, p);
+                    else if (param instanceof Integer p) preparedStatement.setInt(i + 1, p);
+                    else if (param instanceof chess.ChessGame p) preparedStatement.setString(i + 1, p.toString());
+                    else if (param == null) preparedStatement.setNull(i + 1, java.sql.Types.NULL);
+                }
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(500, String.format("Unable to perform execute Update: %s", ex.getMessage()));
+        }
+    }
 
     /**
      * Create a connection to the database and sets the catalog based upon the

@@ -27,7 +27,7 @@ public class SQLGameDAO implements GameDAO{
         var result = new ArrayList<Game>();
         try {
             try (var conn = DatabaseManager.getConnection()) {
-                var statement = "SELECT * FROM game";
+                var statement = "SELECT gameName, gameID, whiteUsername, blackUsername, chessGame FROM game";
                 try (var ps = conn.prepareStatement(statement)) {
                     try (var rs = ps.executeQuery()) {
                         while (rs.next()) {
@@ -48,13 +48,10 @@ public class SQLGameDAO implements GameDAO{
     public int createGame(Game game) {
         int gameID = gameIDTally;
         gameIDTally++;
-        Game myGame = new Game(game.gameName(), gameID, null, null, null);
-        String SQLCreateGame = "INSERT INTO game (gameName, gameID, whiteUsername, blackUsername, chessGame) VALUES ('"
-                + myGame.gameName() + "', '" + myGame.gameID() + "', '"
-                + myGame.whiteUsername() + "', '" + myGame.blackUsername() + "', '"
-                + myGame.game() + "')";
+        Game myGame = new Game(game.gameName(), gameID, "null", "null", null);
+        String SQLCreateGame = "INSERT INTO game (gameName, gameID, whiteUsername, blackUsername, chessGame) VALUES (?, ?, ?, ?, ?)";
         try {
-            DatabaseManager.executeUpdate(SQLCreateGame);
+            DatabaseManager.createGameUpdate(SQLCreateGame, myGame.gameName(), gameID, null, null, null);
         }
         catch (DataAccessException ex) {
             System.out.println(String.format("Error:", ex.getMessage()));
@@ -130,18 +127,18 @@ public class SQLGameDAO implements GameDAO{
     private Game readGame(ResultSet rs) throws SQLException {
         var gameName = rs.getString("gameName");
         var gameID = rs.getInt("gameID");
-        String whiteUsername = null;
-        if (!rs.getString("whiteUsername").equals("null")) {
-            whiteUsername = rs.getString("whiteUsername");
-        }
-        String blackUsername = null;
-        if (!rs.getString("blackUsername").equals("null")) {
-            blackUsername = rs.getString("blackUsername");
-        }
-        String jsonChessGame = null;
-        if (!rs.getString("chessGame").equals("null")) {
-            jsonChessGame = rs.getString("chessGame");
-        }
+//        String whiteUsername = null;
+//        if (!rs.getString("whiteUsername").equals("null")) {
+        var whiteUsername = rs.getString("whiteUsername");
+//        }
+//        String blackUsername = null;
+//        if (!rs.getString("blackUsername").equals("null")) {
+      var blackUsername = rs.getString("blackUsername");
+//        }
+//        String jsonChessGame = null;
+//        if (!rs.getString("chessGame").equals("null")) {
+        var jsonChessGame = rs.getString("chessGame");
+//        }
         var chessGame = new Gson().fromJson(jsonChessGame, ChessGame.class);
         return new Game(gameName, gameID, whiteUsername, blackUsername, chessGame);
     }
