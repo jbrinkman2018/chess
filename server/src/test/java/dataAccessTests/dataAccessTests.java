@@ -327,7 +327,7 @@ public class dataAccessTests {
         GameDAO gameDAO = new SQLGameDAO();
         int gameID = gameDAO.createGame(new Game("newGameName", 1, null, null, null));
         gameDAO.updateGame(gameID, ChessGame.TeamColor.BLACK, "newUser");
-        assertEquals("null",gameDAO.getGame(gameID).whiteUsername(), "game updated wrong color");
+        assertNull(gameDAO.getGame(gameID).whiteUsername(), "game updated wrong color");
     }
 
     @Test

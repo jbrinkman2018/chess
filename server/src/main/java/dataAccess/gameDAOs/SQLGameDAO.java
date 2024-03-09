@@ -94,7 +94,7 @@ public class SQLGameDAO implements GameDAO{
     }
     @Override
     public void updateGame(int gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException{
-        if (playerColor == null) {
+        if (playerColor == null ) {
         }
         else {
             String SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = '"
@@ -102,10 +102,10 @@ public class SQLGameDAO implements GameDAO{
             if (playerColor != ChessGame.TeamColor.BLACK && playerColor != ChessGame.TeamColor.WHITE) {
                 return;
             }
-            if ((!getGame(gameID).whiteUsername().equals("null")) && (playerColor == ChessGame.TeamColor.WHITE)) {
+            if ((getGame(gameID).whiteUsername() != null) && (playerColor == ChessGame.TeamColor.WHITE)) {
                 throw new DataAccessException(403, "already taken");
             }
-            if ((!getGame(gameID).blackUsername().equals("null")) && (playerColor == ChessGame.TeamColor.BLACK)) {
+            if ((getGame(gameID).blackUsername() != null) && (playerColor == ChessGame.TeamColor.BLACK)) {
                 throw new DataAccessException(403, "already taken");
             }
             try {
@@ -130,9 +130,18 @@ public class SQLGameDAO implements GameDAO{
     private Game readGame(ResultSet rs) throws SQLException {
         var gameName = rs.getString("gameName");
         var gameID = rs.getInt("gameID");
-        var whiteUsername = rs.getString("whiteUsername");
-        var blackUsername = rs.getString("blackUsername");
-        var jsonChessGame = rs.getString("chessGame");
+        String whiteUsername = null;
+        if (!rs.getString("whiteUsername").equals("null")) {
+            whiteUsername = rs.getString("whiteUsername");
+        }
+        String blackUsername = null;
+        if (!rs.getString("blackUsername").equals("null")) {
+            blackUsername = rs.getString("blackUsername");
+        }
+        String jsonChessGame = null;
+        if (!rs.getString("chessGame").equals("null")) {
+            jsonChessGame = rs.getString("chessGame");
+        }
         var chessGame = new Gson().fromJson(jsonChessGame, ChessGame.class);
         return new Game(gameName, gameID, whiteUsername, blackUsername, chessGame);
     }
