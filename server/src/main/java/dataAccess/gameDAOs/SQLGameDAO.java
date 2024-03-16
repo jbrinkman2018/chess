@@ -136,7 +136,7 @@ public class SQLGameDAO implements GameDAO{
       var blackUsername = rs.getString("blackUsername");
 //        }
 //        String jsonChessGame = null;
-//        if (!rs.getString("chessGame").equals("null")) {
+//        if (!rs.fgetString("chessGame").equals("null")) {
         var jsonChessGame = rs.getString("chessGame");
 //        }
         var chessGame = new Gson().fromJson(jsonChessGame, ChessGame.class);
