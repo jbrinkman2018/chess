@@ -1,4 +1,7 @@
 package client;
 
-public class State {
+public enum State {
+    GAMEPLAY,
+    LOGGEDIN,
+    LOGGEDOUT
 }
