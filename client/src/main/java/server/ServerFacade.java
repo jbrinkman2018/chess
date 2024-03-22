@@ -26,21 +26,26 @@ public class ServerFacade {
         this.makeRequest("DELETE", path, null, authToken,  null);
     }
 
-//    public Game[] listGames() throws DataAccessException {
-//        var path = "/game";
-//        var response = this.makeRequest("GET", path, null, null);
-//        return response.pet();
-//    }
+    public Game[] listGames(String authToken) throws DataAccessException {
+        var path = "/game";
+        record listGamesResponse(Game[] games) {
+        }
+        var response = this.makeRequest("GET", path,null, authToken, listGamesResponse.class);
+        return response.games();
+    }
+    public Game createGame(Game game, String authToken) throws DataAccessException {
+        var path = "/game";
+        return this.makeRequest("POST", path, game, authToken, Game.class);
+    }
 
-    private <T> T makeRequest(String method, String path, Object request, Object header, Class<T> responseClass) throws DataAccessException {
+    private <T> T makeRequest(String method, String path, Object request, String auth, Class<T> responseClass) throws DataAccessException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
-// need to write  a header method
+            writeAuth(auth, http);
             writeBody(request, http);
-            writeHeader(header, http);
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
@@ -59,13 +64,9 @@ public class ServerFacade {
             }
         }
     }
-    private static void writeHeader(Object header, HttpURLConnection http) throws IOException {
-        if (header != null) {
-            http.addRequestProperty("Content-Type", "application/json");
-            String reqData = new Gson().toJson(header);
-            try (OutputStream reqHeader = http.getOutputStream()) {
-                reqHeader.write(reqData.getBytes());
-            }
+    private static void writeAuth(String auth, HttpURLConnection http) throws IOException {
+        if (auth != null) {
+            http.addRequestProperty("Authorization", auth);
         }
     }
 
