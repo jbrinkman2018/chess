@@ -11,6 +11,9 @@ public class ServerFacade {
     public ServerFacade(String serverUrl){
         this.serverUrl = serverUrl;
     }
+    public ServerFacade(int port){
+        this.serverUrl = "http://localhost:" + port;
+    }
 
     public Auth register(User user) throws DataAccessException {
         var path = "/user";
@@ -40,6 +43,10 @@ public class ServerFacade {
     public Game joinGame(Game game, String authToken) throws DataAccessException {
         var path = "/game";
         return this.makeRequest("POST", path, game, authToken, Game.class);
+    }
+    public void clear() throws DataAccessException {
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null, null);
     }
 
     private <T> T makeRequest(String method, String path, Object request, String auth, Class<T> responseClass) throws DataAccessException {

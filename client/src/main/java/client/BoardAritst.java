@@ -18,14 +18,19 @@ public class BoardAritst {
         TOP,
         BOTTOM
     }
+    private enum rowOrientation {
+        AH,
+        HA
+    }
     public String draw() {
-            return borderBoardHARow() +
+            return  colorBorderRow(rowOrientation.HA) +
                     drawPieceRows(orientation.TOP) +
-                borderBoardHARow() +
+                    colorBorderRow(rowOrientation.HA) +
                 "\n" +
-                borderBoardAHRow() +
-                    drawPieceRows(orientation.BOTTOM)+
-                borderBoardAHRow();
+                    colorBorderRow(rowOrientation.AH) +
+                    drawPieceRows(orientation.BOTTOM) +
+                    colorBorderRow(rowOrientation.AH) +
+                    EscapeSequences.SET_TEXT_COLOR_BLUE;
     }
     private String drawBoardRow(int row, orientation orient) {
         StringBuilder str = new StringBuilder();
@@ -47,21 +52,37 @@ public class BoardAritst {
         }
         return str.toString();
     }
-    private String borderBoardHARow() {
-        return EscapeSequences.SET_TEXT_COLOR_BLUE + EscapeSequences.SET_BG_COLOR_WHITE +
-                EscapeSequences.EMPTY + "h" + EscapeSequences.EMPTY + "g" +
-                EscapeSequences.EMPTY +"f" + EscapeSequences.EMPTY + "e" + EscapeSequences.EMPTY + "d" +
-                EscapeSequences.EMPTY + "c" + EscapeSequences.EMPTY + "b" + EscapeSequences.EMPTY + "a" +
-                EscapeSequences.EMPTY+ EscapeSequences.RESET_BG_COLOR +
-                "\n";
-    }
-    private String borderBoardAHRow() {
-        return EscapeSequences.SET_TEXT_COLOR_BLUE + EscapeSequences.SET_BG_COLOR_WHITE +
-                EscapeSequences.EMPTY + "a" + EscapeSequences.EMPTY + "b" +
-                EscapeSequences.EMPTY + "c" + EscapeSequences.EMPTY + "d" + EscapeSequences.EMPTY + "e" +
-                EscapeSequences.EMPTY + "f" + EscapeSequences.EMPTY + "g" + EscapeSequences.EMPTY + "h" +
-                EscapeSequences.EMPTY + EscapeSequences.RESET_BG_COLOR+
-                "\n";
+    private String colorBorderRow(rowOrientation rowOrient) {
+        StringBuilder str = new StringBuilder();
+        str.append(EscapeSequences.SET_TEXT_COLOR_BLUE + EscapeSequences.SET_BG_COLOR_WHITE + EscapeSequences.EMPTY);
+        for (int col = 1; col < 9; col++){
+            if (rowOrient == rowOrientation.AH) {
+                switch (col) {
+                    case 1 -> str.append(" a ");
+                    case 2 -> str.append(" b ");
+                    case 3 -> str.append(" c ");
+                    case 4 -> str.append(" d ");
+                    case 5 -> str.append(" e ");
+                    case 6 -> str.append(" f ");
+                    case 7 -> str.append(" g ");
+                    case 8 -> str.append(" h ");
+                }
+            }
+            else {
+                switch (col) {
+                    case 1 -> str.append(" h ");
+                    case 2 -> str.append(" g ");
+                    case 3 -> str.append(" f ");
+                    case 4 -> str.append(" e ");
+                    case 5 -> str.append(" d ");
+                    case 6 -> str.append(" c ");
+                    case 7 -> str.append(" b ");
+                    case 8 -> str.append(" a ");
+                }
+            }
+        }
+        str.append(EscapeSequences.EMPTY + EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "\n");
+        return str.toString();
     }
     private String drawPieceRows(orientation orient) {
         StringBuilder rowString = new StringBuilder();
@@ -72,7 +93,7 @@ public class BoardAritst {
                         EscapeSequences.SET_TEXT_COLOR_BLUE + EscapeSequences.SET_BG_COLOR_WHITE +
                                 " " + row + " " + drawBoardRow(row, orient) +
                                 EscapeSequences.SET_TEXT_COLOR_BLUE + EscapeSequences.SET_BG_COLOR_WHITE +
-                                " " + row + " " + EscapeSequences.RESET_BG_COLOR + "\n");
+                                " " + row + " " + EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "\n");
             }
         }
         else {
@@ -81,7 +102,7 @@ public class BoardAritst {
                         EscapeSequences.SET_TEXT_COLOR_BLUE + EscapeSequences.SET_BG_COLOR_WHITE +
                                 " " + row + " " + drawBoardRow(row,orient) +
                                 EscapeSequences.SET_TEXT_COLOR_BLUE + EscapeSequences.SET_BG_COLOR_WHITE +
-                                " " + row + " " + EscapeSequences.RESET_BG_COLOR + "\n");
+                                " " + row + " " + EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "\n");
             }
         }
         return rowString.toString();

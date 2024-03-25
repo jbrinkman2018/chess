@@ -14,7 +14,6 @@ public class ChessClient {
     private final String serverUrl;
     private State state = State.LOGGEDOUT;
     private String myAuthToken = null;
-
     public ChessClient(String serverUrl){
         this.serverUrl = serverUrl;
         server = new ServerFacade(serverUrl);
@@ -62,10 +61,7 @@ public class ChessClient {
         assertLoggedIn();
         server.logout(myAuthToken);
         state = State.LOGGEDOUT;
-//            visitorName = String.join("-", params);
-//            ws = new WebSocketFacade(serverUrl, notificationHandler);
-//            ws.enterPetShop(visitorName);
-            return "You logged out";
+        return "You logged out";
     }
     public String listGames() throws DataAccessException {
         assertLoggedIn();
