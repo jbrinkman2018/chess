@@ -15,7 +15,15 @@ public class ChessGame {
     private ChessBoard board;
     private TeamColor teamTurn;
 
-    public ChessGame() {}
+    public ChessGame() {
+    }
+    public ChessGame(boolean liveGame){
+        if (liveGame){
+            this.board = new ChessBoard();
+            this.board.resetBoard();
+            this.setTeamTurn(TeamColor.WHITE);
+        }
+    }
 
     /**
      * @return Which team's turn it is

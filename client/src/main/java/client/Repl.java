@@ -12,7 +12,7 @@ public class Repl {
         str.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY + EscapeSequences.SET_TEXT_COLOR_BLUE + "Welcome to Chess, the competition is waiting " +
                 EscapeSequences.BLACK_KING);
         System.out.println(str);
-        System.out.println(chessClient.help());
+        System.out.print(chessClient.help());
 
         Scanner scanner = new Scanner(System.in);
         var result = "";

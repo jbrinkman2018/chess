@@ -1,25 +1,25 @@
 package client;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import client.ui.EscapeSequences;
 import dataAccess.DataAccessException;
+import java.util.ArrayList;
 
 import java.util.zip.DataFormatException;
 
 public class BoardAritst {
     private ChessBoard board;
     private ChessGame.TeamColor playerColor;
-    BoardAritst(ChessBoard chessBoard, ChessGame.TeamColor playerColor){
-        if (chessBoard == null) {
-            this.board = new ChessBoard();
+    private ArrayList<ChessPosition> endPositions;
+    BoardAritst(ChessBoard chessBoard, ChessGame.TeamColor playerColor, ArrayList<ChessPosition> endPositions){
+        this.board = chessBoard;
+        this.playerColor = playerColor;
+        if (endPositions == null){
+            this.endPositions = new ArrayList<ChessPosition>();
         }
         else {
-            this.board = chessBoard;
+            this.endPositions = endPositions;
         }
-        this.playerColor = playerColor;
     }
     private enum orientation{
         TOP,
@@ -30,16 +30,19 @@ public class BoardAritst {
         HA
     }
     public String draw() {
+        var orient = orientation.BOTTOM;
+        if (playerColor.equals(ChessGame.TeamColor.BLACK)){
+            orient = orientation.TOP;
+        }
             return  "\n" +
                     colorBorderRow(rowOrientation.HA) +
-                    drawPieceRows(orientation.TOP) +
+                    drawPieceRows(orient) +
                     colorBorderRow(rowOrientation.HA) +
 //                    "\n" +
                     EscapeSequences.SET_TEXT_COLOR_BLUE;
     }
     private String drawBoardRow(int row, orientation orient) {
         StringBuilder str = new StringBuilder();
-//        if (orient == orientation.TOP){
         if (playerColor.equals(ChessGame.TeamColor.BLACK)){
             if (row %2 == 0) {
                 str.append(colorRowDarkFirst(row));
@@ -104,8 +107,13 @@ public class BoardAritst {
         StringBuilder str = new StringBuilder();
         for (int col = 1; col < 9; col++) {
             if (col % 2 == 0) {
-                str.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
                 ChessPosition position = new ChessPosition(row, col);
+                if (endPositions.contains(position)) {
+                    str.append(EscapeSequences.SET_BG_COLOR_YELLOW);
+                }
+                else {
+                    str.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+                }
                 if (board.getPiece(position) == null) {
                     str.append(EscapeSequences.EMPTY);
                 }
@@ -113,8 +121,13 @@ public class BoardAritst {
                     str.append(drawChessPiece(position));
                 }
             } else {
-                str.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
                 ChessPosition position = new ChessPosition(row, col);
+                if (endPositions.contains(position)) {
+                    str.append(EscapeSequences.SET_BG_COLOR_YELLOW);
+                }
+                else {
+                    str.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+                }
                 if (board.getPiece(position) == null) {
                     str.append(EscapeSequences.EMPTY);
                 }
@@ -129,8 +142,13 @@ public class BoardAritst {
         StringBuilder str = new StringBuilder();
         for (int col = 1; col < 9; col++) {
             if (col % 2 == 0) {
-                str.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
                 ChessPosition position = new ChessPosition(row, col);
+                if (endPositions.contains(position)) {
+                    str.append(EscapeSequences.SET_BG_COLOR_YELLOW);
+                }
+                else {
+                    str.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+                }
                 if (board.getPiece(position) == null) {
                     str.append(EscapeSequences.EMPTY);
                 }
@@ -138,8 +156,13 @@ public class BoardAritst {
                     str.append(drawChessPiece(position));
                 }
             } else {
-                str.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
                 ChessPosition position = new ChessPosition(row, col);
+                if (endPositions.contains(position)) {
+                    str.append(EscapeSequences.SET_BG_COLOR_YELLOW);
+                }
+                else {
+                    str.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+                }
                 if (board.getPiece(position) == null) {
                     str.append(EscapeSequences.EMPTY);
                 }

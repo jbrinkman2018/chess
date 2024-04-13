@@ -36,7 +36,7 @@ public class ChessClient {
                 case "redraw" -> redrawBoard();
                 case "leave" -> leaveGame();
                 case "move" -> makeMove(params);
-                case "showMoves" -> showMoves(params);
+                case "highlight" -> showMoves(params);
                 case "resign" -> resign();
                 case "quit" -> "quit";
                 default -> help();
@@ -115,7 +115,7 @@ public class ChessClient {
                 return gameplay.redrawBoard();
             }
             else {
-                gameplay = new GamePlay(playerColor, game.game().getBoard());
+                gameplay = new GamePlay(playerColor, game.game());
                 return gameplay.redrawBoard();
             }
         }
@@ -133,10 +133,10 @@ public class ChessClient {
                 return gameplay.redrawBoard();
             }
             else {
-                gameplay = new GamePlay(null, game.game().getBoard());
+                gameplay = new GamePlay(null, game.game());
                 return gameplay.redrawBoard();
             }
-        }k else {
+        } else {
             throw new DataAccessException(400, "Expected: <GAMEID>");
         }
     }
@@ -163,8 +163,13 @@ public class ChessClient {
     }
 
     private void assertLoggedIn() throws DataAccessException {
-        if (state == State.LOGGEDOUT) {
-            throw new DataAccessException(400, "You must sign in");
+        if (state != State.LOGGEDIN) {
+            if (state == State.GAMEPLAY){
+                throw new DataAccessException(400, "You are already in a game. Please Leave first");
+            }
+            else {
+                throw new DataAccessException(400, "You must sign in");
+            }
         }
     }
     private void assertGamePlay() throws DataAccessException {
@@ -195,9 +200,10 @@ public class ChessClient {
                 In gameplay:
                 - redraw - redraw the chessboard
                 - leave - leave the game
-                - move <PIECE><MOVE>
+                - move <POSITION><MOVE>
                 - resign - resign the game
-                - showMoves - highlight legal moves
+                - highlight <Position> - highlight legal moves
+                              for piece in this position on the board
                 - quit
                 - help - with possible commands";
                 """;
