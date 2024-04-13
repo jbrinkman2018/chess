@@ -11,8 +11,15 @@ import java.util.zip.DataFormatException;
 
 public class BoardAritst {
     private ChessBoard board;
-    BoardAritst(ChessBoard chessBoard){
-        this.board = chessBoard;
+    private ChessGame.TeamColor playerColor;
+    BoardAritst(ChessBoard chessBoard, ChessGame.TeamColor playerColor){
+        if (chessBoard == null) {
+            this.board = new ChessBoard();
+        }
+        else {
+            this.board = chessBoard;
+        }
+        this.playerColor = playerColor;
     }
     private enum orientation{
         TOP,
@@ -23,18 +30,17 @@ public class BoardAritst {
         HA
     }
     public String draw() {
-            return  colorBorderRow(rowOrientation.HA) +
+            return  "\n" +
+                    colorBorderRow(rowOrientation.HA) +
                     drawPieceRows(orientation.TOP) +
                     colorBorderRow(rowOrientation.HA) +
-                "\n" +
-                    colorBorderRow(rowOrientation.AH) +
-                    drawPieceRows(orientation.BOTTOM) +
-                    colorBorderRow(rowOrientation.AH) +
+//                    "\n" +
                     EscapeSequences.SET_TEXT_COLOR_BLUE;
     }
     private String drawBoardRow(int row, orientation orient) {
         StringBuilder str = new StringBuilder();
-        if (orient == orientation.TOP){
+//        if (orient == orientation.TOP){
+        if (playerColor.equals(ChessGame.TeamColor.BLACK)){
             if (row %2 == 0) {
                 str.append(colorRowDarkFirst(row));
             }
@@ -56,29 +62,15 @@ public class BoardAritst {
         StringBuilder str = new StringBuilder();
         str.append(EscapeSequences.SET_TEXT_COLOR_BLUE + EscapeSequences.SET_BG_COLOR_WHITE + EscapeSequences.EMPTY);
         for (int col = 1; col < 9; col++){
-            if (rowOrient == rowOrientation.AH) {
-                switch (col) {
-                    case 1 -> str.append(" a ");
-                    case 2 -> str.append(" b ");
-                    case 3 -> str.append(" c ");
-                    case 4 -> str.append(" d ");
-                    case 5 -> str.append(" e ");
-                    case 6 -> str.append(" f ");
-                    case 7 -> str.append(" g ");
-                    case 8 -> str.append(" h ");
-                }
-            }
-            else {
-                switch (col) {
-                    case 1 -> str.append(" h ");
-                    case 2 -> str.append(" g ");
-                    case 3 -> str.append(" f ");
-                    case 4 -> str.append(" e ");
-                    case 5 -> str.append(" d ");
-                    case 6 -> str.append(" c ");
-                    case 7 -> str.append(" b ");
-                    case 8 -> str.append(" a ");
-                }
+            switch (col) {
+                case 1 -> str.append(" a ");
+                case 2 -> str.append(" b ");
+                case 3 -> str.append(" c ");
+                case 4 -> str.append(" d ");
+                case 5 -> str.append(" e ");
+                case 6 -> str.append(" f ");
+                case 7 -> str.append(" g ");
+                case 8 -> str.append(" h ");
             }
         }
         str.append(EscapeSequences.EMPTY + EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "\n");

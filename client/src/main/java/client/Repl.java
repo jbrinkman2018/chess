@@ -30,6 +30,7 @@ public class Repl {
         }
     }
     private void printPrompt() {
-        System.out.print("\n" + ">>> ");
+        System.out.print("\n" + ">>> [" + chessClient.state + "]\n");
+//        System.out.println(chessClient.help());
     }
 }

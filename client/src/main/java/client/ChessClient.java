@@ -5,6 +5,7 @@ import dataAccess.DataAccessException;
 import server.ServerFacade;
 import model.*;
 import chess.*;
+import chess.ChessGame;
 
 import java.util.Arrays;
 
@@ -12,8 +13,9 @@ public class ChessClient {
     private String visitorName = null;
     private final ServerFacade server;
     private final String serverUrl;
-    private State state = State.LOGGEDOUT;
+    public State state = State.LOGGEDOUT;
     private String myAuthToken = null;
+    private GamePlay gameplay = null;
     public ChessClient(String serverUrl){
         this.serverUrl = serverUrl;
         server = new ServerFacade(serverUrl);
@@ -31,6 +33,11 @@ public class ChessClient {
                 case "create" -> createGame(params);
                 case "join" -> joinGame(params);
                 case "observe" -> observeGame(params);
+                case "redraw" -> redrawBoard();
+                case "leave" -> leaveGame();
+                case "move" -> makeMove(params);
+                case "showMoves" -> showMoves(params);
+                case "resign" -> resign();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -44,7 +51,8 @@ public class ChessClient {
             var user = new User(params[0], params[1], params[2]);
             myAuthToken = server.register(user).authToken();
             state = State.LOGGEDIN;
-            return String.format("You registered with the following info \n %s.", user);
+            return String.format("You registered with the following info \n username: %s, password: %s, email: %s",
+                    user.username(), user.password(), user.email());
         }
         throw new DataAccessException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
     }
@@ -53,7 +61,7 @@ public class ChessClient {
             var user = new User(params[0], params[1], null);
             state = State.LOGGEDIN;
             myAuthToken = server.login(user).authToken();
-            return String.format("You logged in with the following info \n %s.", user);
+            return String.format("You logged in with the following info \n username: %s, password: %s", user.username(), user.password());
         }
         throw new DataAccessException(400, "Expected: <USERNAME> <PASSWORD>");
     }
@@ -101,7 +109,15 @@ public class ChessClient {
             }
             var game = new Game(null, gameID, playerColor.toString(),null,null);
             var response = server.joinGame(game, myAuthToken);
-            return drawGameBoard();
+            state = State.GAMEPLAY;
+            if (game.game() == null){
+                gameplay = new GamePlay(playerColor, null);
+                return gameplay.redrawBoard();
+            }
+            else {
+                gameplay = new GamePlay(playerColor, game.game().getBoard());
+                return gameplay.redrawBoard();
+            }
         }
         throw new DataAccessException(400, "Expected: <GAMEID> [WHITE|BLACK]");
     }
@@ -111,15 +127,49 @@ public class ChessClient {
             var gameID = Integer.parseInt(params[0]);
             var game = new Game(null, gameID, null, null, null);
             var response = server.joinGame(game, myAuthToken);
-            return drawGameBoard();
-        } else {
+            state = State.GAMEPLAY;
+            if (game.game() == null){
+                gameplay = new GamePlay(null, null);
+                return gameplay.redrawBoard();
+            }
+            else {
+                gameplay = new GamePlay(null, game.game().getBoard());
+                return gameplay.redrawBoard();
+            }
+        }k else {
             throw new DataAccessException(400, "Expected: <GAMEID>");
         }
+    }
+    private String redrawBoard() throws DataAccessException{
+        assertGamePlay();
+        return gameplay.redrawBoard();
+    }
+    private String leaveGame() throws DataAccessException{
+        assertGamePlay();
+        state = State.LOGGEDIN;
+        return "You left the game";
+    }
+    private String makeMove(String... params) throws DataAccessException{
+        assertGamePlay();
+        return gameplay.makeMove(params);
+    }
+    private String showMoves(String... params) throws DataAccessException{
+        assertGamePlay();
+        return gameplay.showMoves(params);
+    }
+    private String resign() throws DataAccessException{
+        assertGamePlay();
+        return gameplay.resign();
     }
 
     private void assertLoggedIn() throws DataAccessException {
         if (state == State.LOGGEDOUT) {
             throw new DataAccessException(400, "You must sign in");
+        }
+    }
+    private void assertGamePlay() throws DataAccessException {
+        if (state != State.GAMEPLAY) {
+            throw new DataAccessException(400, "You must be in a game");
         }
     }
 
@@ -142,10 +192,14 @@ public class ChessClient {
                 """;
         } else return
                 """
-                In gameplay;
+                In gameplay:
+                - redraw - redraw the chessboard
+                - leave - leave the game
+                - move <PIECE><MOVE>
+                - resign - resign the game
+                - showMoves - highlight legal moves
+                - quit
+                - help - with possible commands";
                 """;
-    }
-    public String drawGameBoard() {
-        return new BoardAritst(new ChessBoard()).draw();
     }
 }
