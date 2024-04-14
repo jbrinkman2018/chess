@@ -1,6 +1,7 @@
 package webSocketMessages.userCommands;
 
 import java.util.Objects;
+import chess.*;
 
 /**
  * Represents a command a user can send the server over a websocket
@@ -10,8 +11,14 @@ import java.util.Objects;
  */
 public class UserGameCommand {
 
-    public UserGameCommand(String authToken) {
+    public UserGameCommand(String authToken, int gameID) {
         this.authToken = authToken;
+        this.gameID = gameID;
+    }
+    public UserGameCommand(String authToken, int gameID, ChessGame.TeamColor playerColor) {
+        this.authToken = authToken;
+        this.gameID = gameID;
+        this.playerColor = playerColor;
     }
 
     public enum CommandType {
@@ -26,6 +33,14 @@ public class UserGameCommand {
 
     private final String authToken;
 
+    private final int gameID;
+    private ChessGame.TeamColor playerColor;
+    public ChessGame.TeamColor getPlayerColor() {
+        return playerColor;
+    }
+    public int getGameID() {
+        return gameID;
+    }
     public String getAuthString() {
         return authToken;
     }
@@ -33,7 +48,9 @@ public class UserGameCommand {
     public CommandType getCommandType() {
         return this.commandType;
     }
-
+    public void setCommandType(CommandType commandType) {
+        this.commandType = commandType;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o)

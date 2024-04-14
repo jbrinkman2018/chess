@@ -1,25 +1,23 @@
-package client;
+package client.chessClient;
 
 import chess.*;
-import client.BoardAritst;
+import client.BoardArtist;
+import client.webSocket.WebSocketFacade;
 import dataAccess.DataAccessException;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Scanner;
+import client.webSocket.GameHandler;
+import model.*;
 
-public class GamePlay {
+public class GamePlay{
     ChessGame.TeamColor playerColor;
     ChessGame game;
     GamePlay(ChessGame.TeamColor playerColor, ChessGame game) {
         this.playerColor = playerColor;
-        if (game == null){
-            this.game = new ChessGame(true);
-        }
-        else {
-            this.game = game;
-        }
+        this.game = Objects.requireNonNullElseGet(game, () -> new ChessGame(true));
     }
     public String redrawBoard(){
         return drawGameBoard(null);
@@ -49,7 +47,7 @@ public class GamePlay {
                     "Expected: <POSITION> in format <COL><ROW> with COL a-g and row 1-8");
         }
     }
-    public String makeMove(String... params) throws DataAccessException{
+    public ChessGame makeMove(String... params) throws DataAccessException{
         if (params.length >= 2) {
             if (!game.getTeamTurn().equals(playerColor)){
                 throw new DataAccessException(400,
@@ -87,7 +85,7 @@ public class GamePlay {
             }catch (InvalidMoveException e){
                 throw new DataAccessException(400, e.getMessage());
             }
-            return redrawBoard();
+            return game;
         }
         else {
             throw new DataAccessException(400,
@@ -98,7 +96,7 @@ public class GamePlay {
         return "You resigned";
     }
     private String drawGameBoard(ArrayList<ChessPosition> endPositions) {
-        return new BoardAritst(game.getBoard(), playerColor, endPositions).draw();
+        return new BoardArtist(game.getBoard(), playerColor, endPositions).draw();
     }
     private int charToCol(char colChar) throws DataAccessException {
         return switch (colChar) {

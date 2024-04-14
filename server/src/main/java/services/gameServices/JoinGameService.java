@@ -12,9 +12,6 @@ public class JoinGameService extends GameService{
     public void joinGame(int gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException {
         gameDAO.updateGame(gameID, playerColor, username);
     }
-    public String getUsername(String authToken){
-        return authDAO.getAuth(authToken).username();
-    }
     public void verifyGameID(int gameID) throws DataAccessException {
         if (gameDAO.getGame(gameID) == null) {
             throw new DataAccessException(400, "bad request");

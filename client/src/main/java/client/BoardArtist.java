@@ -2,16 +2,14 @@ package client;
 
 import chess.*;
 import client.ui.EscapeSequences;
-import dataAccess.DataAccessException;
+
 import java.util.ArrayList;
 
-import java.util.zip.DataFormatException;
-
-public class BoardAritst {
+public class BoardArtist {
     private ChessBoard board;
     private ChessGame.TeamColor playerColor;
     private ArrayList<ChessPosition> endPositions;
-    BoardAritst(ChessBoard chessBoard, ChessGame.TeamColor playerColor, ArrayList<ChessPosition> endPositions){
+    public BoardArtist(ChessBoard chessBoard, ChessGame.TeamColor playerColor, ArrayList<ChessPosition> endPositions){
         this.board = chessBoard;
         this.playerColor = playerColor;
         if (endPositions == null){

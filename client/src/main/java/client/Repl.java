@@ -1,5 +1,7 @@
 package client;
 import java.util.Scanner;
+
+import client.chessClient.ChessClient;
 import client.ui.*;
 
 public class Repl {
@@ -30,7 +32,7 @@ public class Repl {
         }
     }
     private void printPrompt() {
-        System.out.print("\n" + ">>> [" + chessClient.state + "]\n");
+        System.out.print("\n" + ">>> [" + chessClient.getState() + "]\n");
 //        System.out.println(chessClient.help());
     }
 }

@@ -1,8 +1,6 @@
 package clientTests;
 
-import client.ChessClient;
 import dataAccess.DataAccessException;
-import dataAccess.DatabaseManager;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;

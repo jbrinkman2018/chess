@@ -18,4 +18,7 @@ public abstract class GameService implements Service {
             throw new DataAccessException(401, "Error: unauthorized");
         }
     }
+    public String getUsername(String authToken){
+        return authDAO.getAuth(authToken).username();
+    }
 }

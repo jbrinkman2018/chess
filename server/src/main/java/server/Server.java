@@ -1,25 +1,45 @@
 package server;
+
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
-import dataAccess.authDAOs.*;
-import dataAccess.gameDAOs.*;
-import dataAccess.userDAOs.*;
-import services.gameServices.*;
-import services.*;
-import services.userServices.*;
-import spark.*;
-import model.*;
+import dataAccess.authDAOs.AuthDAO;
+import dataAccess.authDAOs.SQLAuthDAO;
+import dataAccess.gameDAOs.GameDAO;
+import dataAccess.gameDAOs.SQLGameDAO;
+import dataAccess.userDAOs.SQLUserDAO;
+import dataAccess.userDAOs.UserDAO;
+import model.Auth;
+import model.Game;
+import model.JoinRequest;
+import model.User;
+import server.webSocket.WebSocketHandler;
+import services.ClearService;
+import services.gameServices.CreateGameService;
+import services.gameServices.JoinGameService;
+import services.gameServices.ListGamesService;
+import services.userServices.LoginService;
+import services.userServices.LogoutService;
+import services.userServices.RegisterService;
+import spark.Request;
 import spark.Response;
+import spark.Spark;
+
 import java.util.Map;
 public class Server {
-    public Server() {}
     private final UserDAO userDAO = new SQLUserDAO();
     private final AuthDAO authDAO = new SQLAuthDAO();
     private final GameDAO gameDAO = new SQLGameDAO();
     private Auth authOutput;
+    private WebSocketHandler wsHandler;
+    public Server() {
+        wsHandler = new WebSocketHandler();
+    }
     public int run(int desiredPort) {
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/connect", wsHandler);
+
         Spark.post("/user", this::registration);
         Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
@@ -28,6 +48,7 @@ public class Server {
         Spark.put("/game", this::joinGame);
         Spark.delete("/db", this::clear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
+
         Spark.awaitInitialization();
         return Spark.port();
     }
