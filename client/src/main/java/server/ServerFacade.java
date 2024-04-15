@@ -42,7 +42,7 @@ public class ServerFacade {
     }
     public Game joinGame(Game game, String authToken) throws DataAccessException {
         var path = "/game";
-        return this.makeRequest("POST", path, game, authToken, Game.class);
+        return this.makeRequest("PUT", path, game, authToken, Game.class);
     }
     public void clear() throws DataAccessException {
         var path = "/db";
@@ -54,8 +54,8 @@ public class ServerFacade {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
-            http.setDoOutput(true);
             writeAuth(auth, http);
+            http.setDoOutput(true);
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);

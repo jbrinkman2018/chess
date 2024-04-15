@@ -15,11 +15,7 @@ public class UserGameCommand {
         this.authToken = authToken;
         this.gameID = gameID;
     }
-    public UserGameCommand(String authToken, int gameID, ChessGame.TeamColor playerColor) {
-        this.authToken = authToken;
-        this.gameID = gameID;
-        this.playerColor = playerColor;
-    }
+
 
     public enum CommandType {
         JOIN_PLAYER,
@@ -31,13 +27,9 @@ public class UserGameCommand {
 
     protected CommandType commandType;
 
-    private final String authToken;
+    protected String authToken;
 
-    private final int gameID;
-    private ChessGame.TeamColor playerColor;
-    public ChessGame.TeamColor getPlayerColor() {
-        return playerColor;
-    }
+    protected int gameID;
     public int getGameID() {
         return gameID;
     }

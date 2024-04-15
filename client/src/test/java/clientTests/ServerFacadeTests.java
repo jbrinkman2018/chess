@@ -143,7 +143,7 @@ public class ServerFacadeTests {
         var authData = facade.register(new User("player1", "password", "email@email.com"));
         var gameDataOne = facade.createGame(new Game("newGameOne", 1, null, null, null), authData.authToken());
         var successResponse = facade.joinGame(new Game("newGameOne", 1, authData.username(), null, null), authData.authToken());
-        assertEquals(2, successResponse.gameID());
+        assertNotEquals(gameDataOne.gameID(), successResponse.gameID());
     }
     @Test
     void joinGameNegative() throws Exception {

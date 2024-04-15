@@ -68,18 +68,21 @@ public class LoggedInClient implements GameHandler {
             var gameID = Integer.parseInt(params[0]);
             var inputColor = params[1];
             ChessGame.TeamColor playerColor = null;
+            Game game = null;
             if (inputColor.toLowerCase().equals("WHITE".toLowerCase())){
                 playerColor = ChessGame.TeamColor.WHITE;
+                game = new Game(null, gameID, client.getUsername(),null,null);
             }
             else if (inputColor.toLowerCase().equals("BLACK".toLowerCase())){
                 playerColor = ChessGame.TeamColor.BLACK;
+                game = new Game(null, gameID, null, client.getUsername(),null);
             }
             else {
                 throw new DataAccessException(400, "Expected: <GAMEID> [WHITE|BLACK]");
             }
-            var game = new Game(null, gameID, playerColor.toString(),null,null);
+
             myGame = game;
-            var response = server.joinGame(game, client.getAuthToken());
+//            var response = server.joinGame(game, client.getAuthToken());
             wsFacade = new WebSocketFacade(client.getServerUrl(), this);
             wsFacade.joinPlayer(gameID, client.getAuthToken(), playerColor);
             client.setState(State.GAMEPLAY);

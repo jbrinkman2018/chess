@@ -23,7 +23,9 @@ public class LoggedOutClient {
     public String register(String... params) throws DataAccessException {
         if (params.length >= 3) {
             var user = new User(params[0], params[1], params[2]);
-            client.setAuthToken(server.register(user).authToken());
+            var auth = server.register((user));
+            client.setAuthToken(auth.authToken());
+            client.setUsername(auth.username());
             client.setState(State.LOGGEDIN);
             return String.format("You registered with the following info \n username: %s, password: %s, email: %s",
                     user.username(), user.password(), user.email());
@@ -33,8 +35,9 @@ public class LoggedOutClient {
     public String login(String... params) throws DataAccessException {
         if (params.length >= 2) {
             var user = new User(params[0], params[1], null);
-            String myAuth = server.login(user).authToken();
-            client.setAuthToken(myAuth);
+            var myAuth = server.login(user);
+            client.setAuthToken(myAuth.authToken());
+            client.setUsername(myAuth.username());
             client.setState(State.LOGGEDIN);
             return String.format("You logged in with the following info \n username: %s, password: %s", user.username(), user.password());
         }

@@ -25,7 +25,6 @@ public class WebSocketHandler {
     }
     @OnWebSocketError
     public void onError(Throwable throwable) {
-        System.out.println(throwable.getMessage());
     }
     @OnWebSocketMessage
     public void onMessage(Session session, String str) throws DataAccessException {
