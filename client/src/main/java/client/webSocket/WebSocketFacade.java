@@ -45,9 +45,6 @@ public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<St
     public void onClose(){}
     public void onError(){}
 
-//    public void connect() {}
-//    public void disconnect() {}
-
     // outgoing messages
     public void joinPlayer(int gameID, String authToken, ChessGame.TeamColor playerColor) throws DataAccessException{
         try{
@@ -66,11 +63,15 @@ public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<St
         UserGameCommand userCmd = new UserGameCommand(authToken, gameID);
         userCmd.setCommandType(UserGameCommand.CommandType.MAKE_MOVE);
     }
-    public void leaveGame(int gameID, String authToken) {
-        UserGameCommand userCmd = new UserGameCommand(authToken, gameID);
-        userCmd.setCommandType(UserGameCommand.CommandType.LEAVE);
-
-//        this.session.close();
+    public void leaveGame(int gameID, String authToken) throws DataAccessException{
+        try{
+            UserGameCommand userCmd = new UserGameCommand(authToken, gameID);
+            userCmd.setCommandType(UserGameCommand.CommandType.LEAVE);
+            session.getBasicRemote().sendText(new Gson().toJson(userCmd));
+            this.session.close();
+        } catch (IOException e){
+            throw new DataAccessException(500, e.getMessage());
+        }
     }
     public void resignGame(int gameID, String authToken){
         UserGameCommand userCmd = new UserGameCommand(authToken, gameID);
@@ -81,5 +82,12 @@ public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<St
 
     // process incoming message
     @Override
-    public void onMessage(String message){}
+    public void onMessage(String message) {
+        ServerMessage msg = new Gson().fromJson(message, ServerMessage.class);
+        switch (msg.getServerMessageType()) {
+            case LOAD_GAME -> gameHandler.updateGame(msg.getGame());
+            case NOTIFICATION -> gameHandler.printMessage(msg.getNotification());
+            case ERROR -> msg.getErrorMessage();
+        }
+    }
 }

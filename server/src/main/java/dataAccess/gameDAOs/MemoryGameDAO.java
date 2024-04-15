@@ -57,4 +57,6 @@ public class MemoryGameDAO implements GameDAO {
     public Game getGame(int gameID){
         return games.get(gameID);
     }
+    @Override
+    public void createNewPlayableGame(Game game) throws DataAccessException{}
 }

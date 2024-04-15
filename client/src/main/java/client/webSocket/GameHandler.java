@@ -1,7 +1,7 @@
 package client.webSocket;
-import model.Game;
+import chess.*;
 
 public interface GameHandler {
-    public void updateGame(Game game);
+    public void updateGame(ChessGame game);
     public void printMessage(String message);
 }

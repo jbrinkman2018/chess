@@ -17,6 +17,18 @@ public class SQLGameDAO implements GameDAO{
     public SQLGameDAO(){
         try {
             DatabaseManager.configTable(createGameTable);
+            try (var conn = DatabaseManager.getConnection()) {
+                var statement = "SELECT MAX(gameID) from game";
+                try (var ps = conn.prepareStatement(statement)) {
+                    try (var rs = ps.executeQuery()) {
+                        if (rs.next()) {
+                            gameIDTally = Integer.parseInt(rs.getString("MAX(gameID)")) + 1;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                throw new DataAccessException(500, String.format("Unable to read data: %s", e.getMessage()));
+            }
         }
         catch(DataAccessException ex) {
             System.out.println(ex.getStatusCode() + String.format(", \"message\" Error: %s", ex.getMessage()));
@@ -141,5 +153,15 @@ public class SQLGameDAO implements GameDAO{
 //        }
         var chessGame = new Gson().fromJson(jsonChessGame, ChessGame.class);
         return new Game(gameName, gameID, whiteUsername, blackUsername, chessGame);
+    }
+    @Override
+    public void createNewPlayableGame(Game game) throws DataAccessException{
+            try {
+                String SQLUpdateGame = "UPDATE game SET ChessGame = '"
+                        + new Gson().toJson(new ChessGame()) + "' WHERE gameID = " + game.gameID();
+                DatabaseManager.executeUpdate(SQLUpdateGame);
+            } catch (DataAccessException ex) {
+                System.out.println(String.format("Error:", ex.getMessage()));
+            }
     }
 }

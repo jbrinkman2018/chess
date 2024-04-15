@@ -33,7 +33,7 @@ public class WebSocketHandler {
             case JOIN_PLAYER -> gameService.joinPlayer(cmd.getGameID(), cmd.getAuthString(), cmd.getPlayerColor(), session);
             case JOIN_OBSERVER -> gameService.joinObserver(cmd.getAuthString(), session);
             case MAKE_MOVE -> gameService.makeMove(cmd.getAuthString(), session);
-            case LEAVE -> gameService.leave(cmd.getAuthString(), session);
+            case LEAVE -> gameService.leave(cmd.getGameID(),cmd.getAuthString(), session);
             case RESIGN -> gameService.resign(cmd.getAuthString(), session);
         }
     }

@@ -9,4 +9,5 @@ public interface GameDAO {
     void clear();
     void updateGame(int gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException;
     Game getGame(int gameID);
+    void createNewPlayableGame(Game game) throws DataAccessException;
 }

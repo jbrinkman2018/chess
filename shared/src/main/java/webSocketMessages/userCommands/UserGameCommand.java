@@ -15,6 +15,11 @@ public class UserGameCommand {
         this.authToken = authToken;
         this.gameID = gameID;
     }
+    public UserGameCommand(String authToken, int gameID, ChessGame.TeamColor playerColor) {
+        this.authToken = authToken;
+        this.gameID = gameID;
+        this.playerColor = playerColor;
+    }
 
 
     public enum CommandType {
@@ -30,6 +35,8 @@ public class UserGameCommand {
     protected String authToken;
 
     protected int gameID;
+    private ChessGame.TeamColor playerColor;
+
     public int getGameID() {
         return gameID;
     }
@@ -42,6 +49,12 @@ public class UserGameCommand {
     }
     public void setCommandType(CommandType commandType) {
         this.commandType = commandType;
+    }
+    public ChessGame.TeamColor getPlayerColor() {
+        return playerColor;
+    }
+    public void getPlayerColor(ChessGame.TeamColor playerColor) {
+        this.playerColor = playerColor;
     }
     @Override
     public boolean equals(Object o) {

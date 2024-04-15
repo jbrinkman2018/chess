@@ -11,12 +11,13 @@ import java.util.Objects;
 public class ServerMessage {
     ServerMessageType serverMessageType;
     String notification;
-
+    String errorMessage;
     public enum ServerMessageType {
         LOAD_GAME,
         ERROR,
         NOTIFICATION
     }
+    private chess.ChessGame game;
 
     public ServerMessage(ServerMessageType type) {
         this.serverMessageType = type;
@@ -25,10 +26,24 @@ public class ServerMessage {
     public ServerMessageType getServerMessageType() {
         return this.serverMessageType;
     }
+    public void setGame(chess.ChessGame game) {
+        this.game = game;
+    }
+    public chess.ChessGame getGame() {
+        return game;
+    }
     public void setNotification(String notification) {
         this.notification = notification;
     }
-
+    public String getNotification() {
+        return this.notification;
+    }
+    public void setErrorMessage(String errorMessage){
+        return;
+    }
+    public String getErrorMessage(){
+        return this.errorMessage;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o)
