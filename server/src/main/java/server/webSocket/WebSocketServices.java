@@ -17,15 +17,25 @@ import chess.ChessGame;
 import javax.xml.crypto.Data;
 
 public class WebSocketServices extends GameService {
-    private final WebSocketSessions sessions = new WebSocketSessions();
+    private final WebSocketSessions sessions;
 
     public WebSocketServices(GameDAO gameDAO, AuthDAO authDAO) {
         super(gameDAO, authDAO);
+        sessions = new WebSocketSessions();
     }
 
     public void joinPlayer(int gameID, String authToken, ChessGame.TeamColor playerColor, Session session) throws DataAccessException {
         try {
             String username = getUsername(authToken);
+            if (playerColor.equals(ChessGame.TeamColor.WHITE)){
+                if (gameDAO.getGame(gameID).whiteUsername() != null){
+                    throw new DataAccessException(400, "White username already taken");
+                }
+            } else if (playerColor.equals(ChessGame.TeamColor.BLACK)) {
+                if (gameDAO.getGame(gameID).blackUsername() != null){
+                    throw new DataAccessException(400, "Black username already taken");
+                }
+            }
             gameDAO.updateGame(gameID, playerColor, username);
             sessions.addSessionToGame(gameID, authToken, session);
             ServerMessage broadcastMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
@@ -33,7 +43,7 @@ public class WebSocketServices extends GameService {
             broadcastMessage(gameID, broadcastMessage, authToken);
             ServerMessage soloMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
             var myGame = gameDAO.getGame(gameID);
-            if (myGame.game() == null){
+            if (myGame.game() == null) {
                 gameDAO.createNewPlayableGame(myGame);
                 myGame = gameDAO.getGame(gameID);
             }
@@ -43,8 +53,26 @@ public class WebSocketServices extends GameService {
             throw new DataAccessException(500, e.getMessage());
         }
     }
-    public void joinObserver(String authToken, Session session){}
-    public void makeMove(String authToken, Session session) {}
+    public void joinObserver(int gameID, String authToken, Session session) throws DataAccessException{
+        try {
+            String username = getUsername(authToken);
+            sessions.addSessionToGame(gameID, authToken, session);
+            ServerMessage broadcastMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            broadcastMessage.setNotification(String.format("%s joined the game as an observer", username));
+            broadcastMessage(gameID, broadcastMessage, authToken);
+            ServerMessage soloMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+            var myGame = gameDAO.getGame(gameID);
+            if (myGame.game() == null) {
+                gameDAO.createNewPlayableGame(myGame);
+                myGame = gameDAO.getGame(gameID);
+            }
+            soloMessage.setGame(myGame.game());
+            sendMessage(gameID, soloMessage, authToken);
+        } catch (IOException e) {
+            throw new DataAccessException(500, e.getMessage());
+        }
+    }
+    public void makeMove(int gameID, chess.ChessMove move, String authToken, Session session) {}
     public void leave(int gameID, String authToken, Session session) throws DataAccessException {
         try {
             String username = getUsername(authToken);
@@ -62,7 +90,7 @@ public class WebSocketServices extends GameService {
             throw new DataAccessException(500, e.getMessage());
         }
     }
-    public void resign(String authToken, Session session){}
+    public void resign(int gameID, String authToken, Session session){}
     public void closeSession(Session session){}
     private void sendMessage(int gameID, ServerMessage message, String authToken) throws IOException {
         var sessionsForGame = this.sessions.getSessionsForGame(gameID);

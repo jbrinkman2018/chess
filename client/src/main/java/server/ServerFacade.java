@@ -5,6 +5,7 @@ import dataAccess.DataAccessException;
 import model.*;
 import java.io.*;
 import java.net.*;
+import java.net.HttpURLConnection;
 
 public class ServerFacade {
     private final String serverUrl;

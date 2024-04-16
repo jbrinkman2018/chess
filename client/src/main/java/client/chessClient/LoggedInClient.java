@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import model.Game;
 import server.ServerFacade;
+import java.net.HttpURLConnection;
 
 public class LoggedInClient implements GameHandler {
     private ChessGame.TeamColor playerColor;
@@ -69,20 +70,15 @@ public class LoggedInClient implements GameHandler {
         if (params.length >= 2) {
             this.gameID = Integer.parseInt(params[0]);
             var inputColor = params[1];
-//            Game game = null;
             if (inputColor.toLowerCase().equals("WHITE".toLowerCase())){
                 this.playerColor = ChessGame.TeamColor.WHITE;
-//                game = new Game(null, gameID, client.getUsername(),null,null);
             }
             else if (inputColor.toLowerCase().equals("BLACK".toLowerCase())){
                 this.playerColor = ChessGame.TeamColor.BLACK;
-//                game = new Game(null, gameID, null, client.getUsername(),null);
             }
             else {
                 throw new DataAccessException(400, "Expected: <GAMEID> [WHITE|BLACK]");
             }
-//            myGame = game;
-//            var response = server.joinGame(game, client.getAuthToken());
             wsFacade = new WebSocketFacade(client.getServerUrl(), this);
             wsFacade.joinPlayer(gameID, client.getAuthToken(), playerColor);
             client.setState(State.GAMEPLAY);
@@ -153,7 +149,7 @@ public class LoggedInClient implements GameHandler {
         } else {
             gameplay.game = game;
         }
-        gameplay.redrawBoard();
+        System.out.println(gameplay.redrawBoard());
     }
     @Override
     public void printMessage(String message){

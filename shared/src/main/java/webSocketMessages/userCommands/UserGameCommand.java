@@ -30,12 +30,13 @@ public class UserGameCommand {
         RESIGN
     }
 
-    protected CommandType commandType;
+    private CommandType commandType;
 
-    protected String authToken;
+    private String authToken;
 
-    protected int gameID;
+    private int gameID;
     private ChessGame.TeamColor playerColor;
+    private ChessMove move;
 
     public int getGameID() {
         return gameID;
@@ -43,6 +44,10 @@ public class UserGameCommand {
     public String getAuthString() {
         return authToken;
     }
+    public ChessMove getMove() {
+        return move;
+    }
+    public void setMove(ChessMove move) {}
 
     public CommandType getCommandType() {
         return this.commandType;
