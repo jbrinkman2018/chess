@@ -58,9 +58,9 @@ public class SQLAuthDAO implements AuthDAO {
     }
     @Override
     public void clear(){
-        String SQLClearAuths = "DELETE FROM auth";
+        String sqlClearAuths = "DELETE FROM auth";
         try {
-            DatabaseManager.executeUpdate(SQLClearAuths);
+            DatabaseManager.executeUpdate(sqlClearAuths);
         }
         catch (DataAccessException ex) {
             System.out.println(String.format("Error:", ex.getMessage()));

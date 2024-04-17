@@ -46,9 +46,9 @@ public class SQLUserDAO implements UserDAO {
     }
     @Override
     public void clear(){
-        String SQLClearUsers = "DELETE FROM user";
+        String sqlClearUsers = "DELETE FROM user";
         try {
-            DatabaseManager.executeUpdate(SQLClearUsers);
+            DatabaseManager.executeUpdate(sqlClearUsers);
         }
         catch (DataAccessException ex) {
             System.out.println(String.format("Error:", ex.getMessage()));

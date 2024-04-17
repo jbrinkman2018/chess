@@ -71,9 +71,9 @@ public class SQLGameDAO implements GameDAO{
     }
     @Override
     public void clear(){
-        String SQLClearGames = "DELETE FROM game";
+        String sqlClearGames = "DELETE FROM game";
         try {
-            DatabaseManager.executeUpdate(SQLClearGames);
+            DatabaseManager.executeUpdate(sqlClearGames);
         }
         catch (DataAccessException ex) {
             System.out.println(String.format("Error:", ex.getMessage()));
@@ -156,9 +156,9 @@ public class SQLGameDAO implements GameDAO{
     @Override
     public void updatePlayableGame(Game game) throws DataAccessException{
         try {
-            String SQLUpdateGame = "UPDATE game SET ChessGame = '"
+            String sqlUpdateGame = "UPDATE game SET ChessGame = '"
                     + new Gson().toJson(game) + "' WHERE gameID = " + game.gameID();
-            DatabaseManager.executeUpdate(SQLUpdateGame);
+            DatabaseManager.executeUpdate(sqlUpdateGame);
         } catch (DataAccessException ex) {
             System.out.println(String.format("Error:", ex.getMessage()));
         }
