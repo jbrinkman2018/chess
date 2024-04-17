@@ -211,21 +211,6 @@ public class WebSocketServices extends GameService {
             sessions.removeSession(mySession);
         }
     }
-    public void updateUsernames() throws DataAccessException{
-        for (var gameID:sessions.getSessionsMap().keySet()) {
-            for (var auth : sessions.getSessionsForGame(gameID).keySet()) {
-                model.Auth removeAuth = authDAO.getAuth(auth);
-                if (gameDAO.getGame(gameID).whiteUsername().equals(removeAuth.username())) {
-                    if (!sessions.getSessionsForGame(gameID).get(removeAuth.authToken()).isOpen()) {
-                        gameDAO.updateGame(gameID, ChessGame.TeamColor.WHITE, null);
-                    }
-                } else if (gameDAO.getGame(gameID).blackUsername().equals(removeAuth.username())) {
-                    if (!sessions.getSessionsForGame(gameID).get(removeAuth.authToken()).isOpen()) {
-                        gameDAO.updateGame(gameID, ChessGame.TeamColor.BLACK, null);
-                    }                }
-            }
-        }
-    }
     private void sendAll(int gameID, ServerMessage message, String authToken) throws IOException{
         broadcastMessage(gameID, message, authToken);
         sendMessage(gameID, message, authToken);

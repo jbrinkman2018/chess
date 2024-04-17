@@ -17,9 +17,9 @@ public class SQLUserDAO implements UserDAO {
     }
     @Override
     public User getUser(String username) throws DataAccessException {
-        String SQLGetUser = "SELECT * FROM user WHERE username = '" + username + "'";
+        String sqlGetUser = "SELECT * FROM user WHERE username = '" + username + "'";
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(SQLGetUser)) {
+            try (var preparedStatement = conn.prepareStatement(sqlGetUser)) {
                 ResultSet rs = preparedStatement.executeQuery();
                 User user = null;
                 if (rs.next()) {
@@ -33,11 +33,11 @@ public class SQLUserDAO implements UserDAO {
     }
     @Override
     public void createUser(User user) throws DataAccessException {
-        String SQLCreateUser = "INSERT INTO user (username, password, email) SELECT '"
+        String sqlCreateUser = "INSERT INTO user (username, password, email) SELECT '"
                 + user.username() + "', '" + user.password() + "', '" + user.email() +
                 "' WHERE NOT EXISTS ( SELECT 1 FROM user WHERE username = '" + user.username() + "')";
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(SQLCreateUser)) {
+            try (var preparedStatement = conn.prepareStatement(sqlCreateUser)) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {

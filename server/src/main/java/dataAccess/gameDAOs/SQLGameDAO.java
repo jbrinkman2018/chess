@@ -60,9 +60,9 @@ public class SQLGameDAO implements GameDAO{
         int gameID = gameIDTally;
         gameIDTally++;
         Game myGame = new Game(game.gameName(), gameID, "null", "null", null);
-        String SQLCreateGame = "INSERT INTO game (gameName, gameID, whiteUsername, blackUsername, chessGame) VALUES (?, ?, ?, ?, ?)";
+        String sqlCreateGame = "INSERT INTO game (gameName, gameID, whiteUsername, blackUsername, chessGame) VALUES (?, ?, ?, ?, ?)";
         try {
-            DatabaseManager.createGameUpdate(SQLCreateGame, myGame.gameName(), gameID, null, null, null);
+            DatabaseManager.createGameUpdate(sqlCreateGame, myGame.gameName(), gameID, null, null, null);
         }
         catch (DataAccessException ex) {
             System.out.println(String.format("Error:", ex.getMessage()));
@@ -108,9 +108,9 @@ public class SQLGameDAO implements GameDAO{
                 if (playerColor != ChessGame.TeamColor.BLACK && playerColor != ChessGame.TeamColor.WHITE) {
                     return;
                 }
-                String SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = NULL WHERE gameID = " + gameID;
+                String sqlUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = NULL WHERE gameID = " + gameID;
                 if (username != null) {
-                    SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = '"
+                    sqlUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = '"
                             + username + "' WHERE gameID = " + gameID;
                     if ((getGame(gameID).whiteUsername() != null) && (playerColor == ChessGame.TeamColor.WHITE)) {
                         throw new DataAccessException(403, "already taken");
@@ -119,7 +119,7 @@ public class SQLGameDAO implements GameDAO{
                         throw new DataAccessException(403, "already taken");
                     }
                 }
-                DatabaseManager.executeUpdate(SQLUpdateGame);
+                DatabaseManager.executeUpdate(sqlUpdateGame);
         }
     }
     private final String[] createGameTable = {
@@ -137,27 +137,18 @@ public class SQLGameDAO implements GameDAO{
     private Game readGame(ResultSet rs) throws SQLException {
         var gameName = rs.getString("gameName");
         var gameID = rs.getInt("gameID");
-//        String whiteUsername = null;
-//        if (!rs.getString("whiteUsername").equals("null")) {
         var whiteUsername = rs.getString("whiteUsername");
-//        }
-//        String blackUsername = null;
-//        if (!rs.getString("blackUsername").equals("null")) {
-      var blackUsername = rs.getString("blackUsername");
-//        }
-//        String jsonChessGame = null;
-//        if (!rs.fgetString("chessGame").equals("null")) {
+        var blackUsername = rs.getString("blackUsername");
         var jsonChessGame = rs.getString("chessGame");
-//        }
         var chessGame = new Gson().fromJson(jsonChessGame, ChessGame.class);
         return new Game(gameName, gameID, whiteUsername, blackUsername, chessGame);
     }
     @Override
     public void createNewPlayableGame(Game game) throws DataAccessException{
             try {
-                String SQLUpdateGame = "UPDATE game SET ChessGame = '"
+                String sqlUpdateGame = "UPDATE game SET ChessGame = '"
                         + new Gson().toJson(new ChessGame(true)) + "' WHERE gameID = " + game.gameID();
-                DatabaseManager.executeUpdate(SQLUpdateGame);
+                DatabaseManager.executeUpdate(sqlUpdateGame);
             } catch (DataAccessException ex) {
                 System.out.println(String.format("Error:", ex.getMessage()));
             }
@@ -172,9 +163,4 @@ public class SQLGameDAO implements GameDAO{
             System.out.println(String.format("Error:", ex.getMessage()));
         }
     }
-//    @Override
-//    public void updateGameMoves() throws DataAccessException {
-////        String SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = '"
-////                + username + " WHERE gameID = " + gameID;
-//    }
 }

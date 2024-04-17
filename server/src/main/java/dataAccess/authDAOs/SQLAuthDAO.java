@@ -21,16 +21,16 @@ public class SQLAuthDAO implements AuthDAO {
     public Auth createAuth(String username) throws DataAccessException {
         String authToken = UUID.randomUUID().toString();
         Auth myAuth = new Auth(username, authToken);
-        String SQLCreateAuth = "INSERT INTO auth (username, authToken) VALUES ('"
+        String sqlCreateAuth = "INSERT INTO auth (username, authToken) VALUES ('"
                 + myAuth.username() + "', '" + myAuth.authToken() + "')";
-        DatabaseManager.executeUpdate(SQLCreateAuth);
+        DatabaseManager.executeUpdate(sqlCreateAuth);
         return myAuth;
     }
     @Override
     public void deleteAuth(String authToken){
-        String SQLClearAuths = "DELETE FROM auth WHERE authToken = '" + authToken + "'";
+        String sqlClearAuths = "DELETE FROM auth WHERE authToken = '" + authToken + "'";
         try {
-            DatabaseManager.executeUpdate(SQLClearAuths);
+            DatabaseManager.executeUpdate(sqlClearAuths);
         }
         catch (DataAccessException ex) {
             System.out.println(String.format("Error:", ex.getMessage()));

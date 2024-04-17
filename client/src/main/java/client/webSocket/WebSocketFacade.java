@@ -41,9 +41,6 @@ public class WebSocketFacade extends Endpoint {
     @Override
     public void onOpen(Session session, EndpointConfig epConfig){
     }
-    public void onClose(){
-    }
-    public void onError(){}
 
     // outgoing messages
     public void joinPlayer(int gameID, String authToken, ChessGame.TeamColor playerColor) throws DataAccessException{

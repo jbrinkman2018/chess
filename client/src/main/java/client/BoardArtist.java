@@ -9,7 +9,7 @@ public class BoardArtist {
     private ChessBoard board;
     private ChessGame.TeamColor playerColor;
     private ArrayList<ChessPosition> endPositions;
-    private rowOrientation rowOrientation;
+    private RowOrientation rowOrientation;
     public BoardArtist(ChessBoard chessBoard, ChessGame.TeamColor playerColor, ArrayList<ChessPosition> endPositions){
         this.board = chessBoard;
         this.playerColor = playerColor;
@@ -20,16 +20,16 @@ public class BoardArtist {
             this.endPositions = endPositions;
         }
     }
-    private enum orientation{
+    private enum Orientation {
         TOP,
         BOTTOM
     }
-    private enum rowOrientation {
+    private enum RowOrientation {
         AH,
         HA
     }
     public String draw() {
-        var orient = orientation.BOTTOM;
+        var orient = Orientation.BOTTOM;
         rowOrientation = rowOrientation.HA;
         String boardDrawing =  "\n" +
                 colorBorderRow() +
@@ -38,7 +38,7 @@ public class BoardArtist {
                 EscapeSequences.SET_TEXT_COLOR_BLUE;
         if (playerColor.equals(ChessGame.TeamColor.BLACK)){
             rowOrientation = rowOrientation.AH;
-            orient = orientation.TOP;
+            orient = Orientation.TOP;
             boardDrawing =  "\n" +
                     colorBorderRow() +
                     drawPieceRows(orient) +
@@ -47,7 +47,7 @@ public class BoardArtist {
         }
         return  boardDrawing;
     }
-    private String drawBoardRow(int row, orientation orient) {
+    private String drawBoardRow(int row, Orientation orient) {
         StringBuilder str = new StringBuilder();
         if (playerColor.equals(ChessGame.TeamColor.BLACK)){
             if (row %2 == 0) {
@@ -98,10 +98,10 @@ public class BoardArtist {
         str.append(EscapeSequences.EMPTY + EscapeSequences.SET_BG_COLOR_LIGHT_GREY + "\n");
         return str.toString();
     }
-    private String drawPieceRows(orientation orient) {
+    private String drawPieceRows(Orientation orient) {
         StringBuilder rowString = new StringBuilder();
         int upperBound = 9;
-        if (orient == orientation.BOTTOM) {
+        if (orient == Orientation.BOTTOM) {
             for (int row = upperBound-1; row> 0; row--){
                 rowString.append(
                         EscapeSequences.SET_TEXT_COLOR_BLUE + EscapeSequences.SET_BG_COLOR_WHITE +

@@ -26,20 +26,10 @@ public class WebSocketHandler {
     @OnWebSocketConnect
     public void onConnect(Session session) {
         this.session = session;
-//        try {
-//            gameService.updateUsernames();
-//        }catch (DataAccessException e){
-//            onError(e);
-//        }
     }
     @OnWebSocketClose
     public void onClose(Session session, int closeID, String closeString) {
         gameService.closeSession(session);
-//        try {
-//            gameService.updateUsernames();
-//        }catch (DataAccessException e){
-//            onError(e);
-//        }
     }
     @OnWebSocketError
     public void onError(Throwable throwable){
