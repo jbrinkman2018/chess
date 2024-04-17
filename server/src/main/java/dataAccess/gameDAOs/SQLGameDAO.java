@@ -4,7 +4,6 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
-import model.Auth;
 import model.Game;
 
 import java.util.*;

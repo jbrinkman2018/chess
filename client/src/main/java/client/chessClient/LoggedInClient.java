@@ -9,7 +9,6 @@ import dataAccess.DataAccessException;
 import model.Game;
 import model.JoinRequest;
 import server.ServerFacade;
-import java.net.HttpURLConnection;
 
 public class LoggedInClient implements GameHandler {
     private ChessGame.TeamColor playerColor;

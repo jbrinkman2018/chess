@@ -4,7 +4,6 @@ import dataAccess.DataAccessException;
 import dataAccess.authDAOs.AuthDAO;
 import dataAccess.gameDAOs.GameDAO;
 import services.Service;
-import model.*;
 
 public abstract class GameService implements Service {
     protected GameDAO gameDAO;

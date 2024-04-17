@@ -2,10 +2,8 @@ package server.webSocket;
 
 import org.eclipse.jetty.websocket.api.Session;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ArrayList;
 
 public class WebSocketSessions {
     private Map<Integer, Map<String, Session>> sessionMap;

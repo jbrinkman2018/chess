@@ -2,7 +2,6 @@ package server.webSocket;
 
 import chess.InvalidMoveException;
 import dataAccess.DataAccessException;
-import dataAccess.DatabaseManager;
 import dataAccess.authDAOs.AuthDAO;
 import dataAccess.gameDAOs.GameDAO;
 import org.eclipse.jetty.websocket.api.Session;
@@ -10,12 +9,10 @@ import com.google.gson.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import server.Server;
 import services.gameServices.GameService;
 import webSocketMessages.serverMessages.*;
 import chess.ChessGame;
 
-import javax.xml.crypto.Data;
 
 public class WebSocketServices extends GameService {
     private final WebSocketSessions sessions;

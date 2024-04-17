@@ -4,13 +4,11 @@ import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 
 import javax.websocket.*;
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import webSocketMessages.serverMessages.*;
 import webSocketMessages.userCommands.*;
-import javax.websocket.*;
 
 import chess.*;
 

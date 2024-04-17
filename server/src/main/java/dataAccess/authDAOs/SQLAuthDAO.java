@@ -1,5 +1,4 @@
 package dataAccess.authDAOs;
-import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
 import model.*;

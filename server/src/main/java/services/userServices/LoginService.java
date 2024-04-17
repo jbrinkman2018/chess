@@ -5,7 +5,6 @@ import dataAccess.DataAccessException;
 import dataAccess.userDAOs.UserDAO;
 import model.*;
 
-import javax.xml.crypto.Data;
 
 public class LoginService extends UserService{
     public LoginService(UserDAO userDAO, AuthDAO authDAO) {

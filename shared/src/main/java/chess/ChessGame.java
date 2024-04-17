@@ -2,7 +2,6 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Objects;
 
 /**

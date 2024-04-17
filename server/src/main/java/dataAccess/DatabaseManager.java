@@ -3,7 +3,6 @@ package dataAccess;
 import java.sql.*;
 import java.util.Properties;
 
-import model.*;
 
 public class DatabaseManager {
     private static final String databaseName;

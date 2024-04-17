@@ -1,14 +1,10 @@
 package dataAccess.userDAOs;
 
-import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
 import model.User;
-import org.springframework.security.core.parameters.P;
 
-import javax.xml.crypto.Data;
 import java.sql.*;
-import java.util.Map;
 
 public class SQLUserDAO implements UserDAO {
     public SQLUserDAO(){
