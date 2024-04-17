@@ -1,5 +1,6 @@
 package clientTests;
 
+import chess.ChessGame;
 import dataAccess.DataAccessException;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -142,15 +143,19 @@ public class ServerFacadeTests {
     void joinGamePositive() throws Exception {
         var authData = facade.register(new User("player1", "password", "email@email.com"));
         var gameDataOne = facade.createGame(new Game("newGameOne", 1, null, null, null), authData.authToken());
-        var successResponse = facade.joinGame(new Game("newGameOne", 1, authData.username(), null, null), authData.authToken());
-        assertNotEquals(gameDataOne.gameID(), successResponse.gameID());
+        var joinRequest = new JoinRequest(ChessGame.TeamColor.WHITE, 1);
+        var successResponse = facade.joinGame(joinRequest, authData.authToken());
+        var listedGames = facade.listGames(authData.authToken());
+        assertEquals(authData.username(), listedGames[0].whiteUsername());
     }
     @Test
     void joinGameNegative() throws Exception {
         var authData = facade.register(new User("player1", "password", "email@email.com"));
         var gameDataOne = facade.createGame(new Game("newGameOne", 1, null, null, null), authData.authToken());
         try{
-            var failedResponse = facade.joinGame(new Game("newGameOne", 2, authData.username(), null, null), authData.authToken());
+
+            var successResponse = facade.joinGame(new JoinRequest(ChessGame.TeamColor.WHITE, 1), authData.authToken());
+            var failedResponse = facade.joinGame(new JoinRequest(ChessGame.TeamColor.WHITE, 1), authData.authToken());
         }
         catch (DataAccessException ex) {
             var dataAccessException = true;

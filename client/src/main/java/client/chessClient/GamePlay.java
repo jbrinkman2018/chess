@@ -47,12 +47,12 @@ public class GamePlay{
                     "Expected: <POSITION> in format <COL><ROW> with COL a-g and row 1-8");
         }
     }
-    public ChessGame makeMove(String... params) throws DataAccessException{
+    public ChessMove makeMove(String... params) throws DataAccessException{
         if (params.length >= 2) {
-            if (!game.getTeamTurn().equals(playerColor)){
-                throw new DataAccessException(400,
-                        "It's not your turn");
-            }
+//            if (!game.getTeamTurn().equals(playerColor)){
+//                throw new DataAccessException(400,
+//                        "It's not your turn");
+//            }
             if (params[0].length() != 2) {
                 throw new DataAccessException(400,
                         "Expected <STARTPOSITION><ENDPOSITION> in format <COL><ROW> with COL a-g and row 1-8");
@@ -80,12 +80,13 @@ public class GamePlay{
                 };
             }
             ChessMove chessMove = new ChessMove(startPosition, endPosition, promotionPiece);
-            try{
-                game.makeMove(chessMove);
-            }catch (InvalidMoveException e){
-                throw new DataAccessException(400, e.getMessage());
-            }
-            return game;
+            return chessMove;
+//            try{
+//                game.makeMove(chessMove);
+//            }catch (InvalidMoveException e){
+//                throw new DataAccessException(400, e.getMessage());
+//            }
+//            return game;
         }
         else {
             throw new DataAccessException(400,
@@ -93,7 +94,7 @@ public class GamePlay{
         }
     }
     public String resign(){
-        return "You resigned";
+        return "";
     }
     private String drawGameBoard(ArrayList<ChessPosition> endPositions) {
         return new BoardArtist(game.getBoard(), playerColor, endPositions).draw();

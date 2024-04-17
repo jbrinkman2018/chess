@@ -102,7 +102,7 @@ public class Server {
         service.verifyAuth(auth);
         service.verifyGameID(playerJoinGame.gameID());
         service.joinGame(playerJoinGame.gameID(), playerJoinGame.playerColor(), service.getUsername(auth));
-        res.status(200);
+//        res.status(200);
         return "{}";
     }
     private Object clear(Request req, Response res) {

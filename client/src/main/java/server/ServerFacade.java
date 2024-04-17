@@ -32,8 +32,7 @@ public class ServerFacade {
 
     public Game[] listGames(String authToken) throws DataAccessException {
         var path = "/game";
-        record listGamesResponse(Game[] games) {
-        }
+        record listGamesResponse(Game[] games) {}
         var response = this.makeRequest("GET", path,null, authToken, listGamesResponse.class);
         return response.games();
     }
@@ -41,9 +40,9 @@ public class ServerFacade {
         var path = "/game";
         return this.makeRequest("POST", path, game, authToken, Game.class);
     }
-    public Game joinGame(Game game, String authToken) throws DataAccessException {
+    public Game joinGame(JoinRequest joinRequest, String authToken) throws DataAccessException {
         var path = "/game";
-        return this.makeRequest("PUT", path, game, authToken, Game.class);
+        return this.makeRequest("PUT", path, joinRequest, authToken, Game.class);
     }
     public void clear() throws DataAccessException {
         var path = "/db";
@@ -55,8 +54,13 @@ public class ServerFacade {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
+            if (request != null) {
+                http.addRequestProperty("Content-Type", "application/json");
+            }
             writeAuth(auth, http);
-            http.setDoOutput(true);
+            if (method.equals("POST") || method.equals("PUT")) {
+                http.setDoOutput(true);
+            }
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);
@@ -69,9 +73,8 @@ public class ServerFacade {
 
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
         if (request != null) {
-            http.addRequestProperty("Content-Type", "application/json");
             String reqData = new Gson().toJson(request);
-            try (OutputStream reqBody = http.getOutputStream()) {
+            try (OutputStream reqBody = new BufferedOutputStream(http.getOutputStream())) {
                 reqBody.write(reqData.getBytes());
             }
         }

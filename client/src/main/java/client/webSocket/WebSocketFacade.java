@@ -43,7 +43,8 @@ public class WebSocketFacade extends Endpoint {
     @Override
     public void onOpen(Session session, EndpointConfig epConfig){
     }
-    public void onClose(){}
+    public void onClose(){
+    }
     public void onError(){}
 
     // outgoing messages
@@ -65,10 +66,11 @@ public class WebSocketFacade extends Endpoint {
             throw new DataAccessException(500, e.getMessage());
         }
     }
-    public void makeMove(int gameID, String authToken) throws DataAccessException{
+    public void makeMove(int gameID, String authToken, ChessMove chessMove) throws DataAccessException{
         try{
             UserGameCommand userCmd = new UserGameCommand(authToken, gameID);
             userCmd.setCommandType(UserGameCommand.CommandType.MAKE_MOVE);
+            userCmd.setMove(chessMove);
             session.getBasicRemote().sendText(new Gson().toJson(userCmd));
         } catch (IOException e){
             throw new DataAccessException(500, e.getMessage());
@@ -96,7 +98,6 @@ public class WebSocketFacade extends Endpoint {
 
     private void sendMessage(){}
     private void handleServerError(ServerMessage error){
-        System.out.println(400);
-        System.out.println(error.getErrorMessage());
+        System.out.println(400 + ", " + error.getErrorMessage());
     }
 }

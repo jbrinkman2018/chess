@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public class ServerMessage {
     ServerMessageType serverMessageType;
-    String notification;
+    String message;
     String errorMessage;
     public enum ServerMessageType {
         LOAD_GAME,
@@ -32,14 +32,14 @@ public class ServerMessage {
     public chess.ChessGame getGame() {
         return game;
     }
-    public void setNotification(String notification) {
-        this.notification = notification;
+    public void setNotification(String message) {
+        this.message = message;
     }
     public String getNotification() {
-        return this.notification;
+        return this.message;
     }
     public void setErrorMessage(String errorMessage){
-        return;
+        this.errorMessage = errorMessage;
     }
     public String getErrorMessage(){
         return this.errorMessage;

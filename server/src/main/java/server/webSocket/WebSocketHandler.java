@@ -26,29 +26,44 @@ public class WebSocketHandler {
     @OnWebSocketConnect
     public void onConnect(Session session) {
         this.session = session;
+//        try {
+//            gameService.updateUsernames();
+//        }catch (DataAccessException e){
+//            onError(e);
+//        }
     }
     @OnWebSocketClose
-    public void onClose(Session session,int closeInt, String str) { gameService.closeSession(session);
+    public void onClose(Session session, int closeID, String closeString) {
+        gameService.closeSession(session);
+//        try {
+//            gameService.updateUsernames();
+//        }catch (DataAccessException e){
+//            onError(e);
+//        }
     }
     @OnWebSocketError
-    public void onError(Throwable throwable) {
+    public void onError(Throwable throwable){
         ServerMessage msg = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
         msg.setErrorMessage(throwable.getMessage());
         try{
-            session.getRemote().sendString(new Gson().toJson(msg));
+        session.getRemote().sendString(new Gson().toJson(msg));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
     @OnWebSocketMessage
-    public void onMessage(Session session, String str) throws DataAccessException {
-        UserGameCommand cmd = new Gson().fromJson(str, UserGameCommand.class);
-        switch (cmd.getCommandType()) {
-            case JOIN_PLAYER -> gameService.joinPlayer(cmd.getGameID(), cmd.getAuthString(), cmd.getPlayerColor(), session);
-            case JOIN_OBSERVER -> gameService.joinObserver(cmd.getGameID(), cmd.getAuthString(), session);
-            case MAKE_MOVE -> gameService.makeMove(cmd.getGameID(), cmd.getMove(), cmd.getAuthString(), session);
-            case LEAVE -> gameService.leave(cmd.getGameID(),cmd.getAuthString(), session);
-            case RESIGN -> gameService.resign(cmd.getGameID(), cmd.getAuthString(), session);
+    public void onMessage(Session session, String str){
+        try {
+            UserGameCommand cmd = new Gson().fromJson(str, UserGameCommand.class);
+            switch (cmd.getCommandType()) {
+                case JOIN_PLAYER -> gameService.joinPlayer(cmd.getGameID(), cmd.getAuthString(), cmd.getPlayerColor(), session);
+                case JOIN_OBSERVER -> gameService.joinObserver(cmd.getGameID(), cmd.getAuthString(), session);
+                case MAKE_MOVE -> gameService.makeMove(cmd.getGameID(), cmd.getMove(), cmd.getAuthString(), session);
+                case LEAVE -> gameService.leave(cmd.getGameID(), cmd.getAuthString(), session);
+                case RESIGN -> gameService.resign(cmd.getGameID(), cmd.getAuthString(), session);
+            }
+        } catch (Throwable e){
+            onError(e);
         }
     }
 }

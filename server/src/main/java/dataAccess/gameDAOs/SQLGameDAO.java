@@ -106,22 +106,21 @@ public class SQLGameDAO implements GameDAO{
         if (playerColor == null ) {
         }
         else {
-            String SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = '"
-                    + username + "' WHERE gameID = " + gameID;
-            if (playerColor != ChessGame.TeamColor.BLACK && playerColor != ChessGame.TeamColor.WHITE) {
-                return;
-            }
-            if ((getGame(gameID).whiteUsername() != null) && (playerColor == ChessGame.TeamColor.WHITE)) {
-                throw new DataAccessException(403, "already taken");
-            }
-            if ((getGame(gameID).blackUsername() != null) && (playerColor == ChessGame.TeamColor.BLACK)) {
-                throw new DataAccessException(403, "already taken");
-            }
-            try {
+                if (playerColor != ChessGame.TeamColor.BLACK && playerColor != ChessGame.TeamColor.WHITE) {
+                    return;
+                }
+                String SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = NULL WHERE gameID = " + gameID;
+                if (username != null) {
+                    SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = '"
+                            + username + "' WHERE gameID = " + gameID;
+                    if ((getGame(gameID).whiteUsername() != null) && (playerColor == ChessGame.TeamColor.WHITE)) {
+                        throw new DataAccessException(403, "already taken");
+                    }
+                    if ((getGame(gameID).blackUsername() != null) && (playerColor == ChessGame.TeamColor.BLACK)) {
+                        throw new DataAccessException(403, "already taken");
+                    }
+                }
                 DatabaseManager.executeUpdate(SQLUpdateGame);
-            } catch (DataAccessException ex) {
-                System.out.println(String.format("Error:", ex.getMessage()));
-            }
         }
     }
     private final String[] createGameTable = {
@@ -164,4 +163,9 @@ public class SQLGameDAO implements GameDAO{
                 System.out.println(String.format("Error:", ex.getMessage()));
             }
     }
+//    @Override
+//    public void removePlayerFromGame(int gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException {
+////        String SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = '"
+////                + username + " WHERE gameID = " + gameID;
+//    }
 }

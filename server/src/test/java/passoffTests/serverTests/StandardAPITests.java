@@ -564,7 +564,7 @@ public class StandardAPITests {
         registerRequest.email = newUser.email;
         TestModels.TestLoginRegisterResult registerResult = serverFacade.register(registerRequest);
 
-        //join request trying to also join  as black
+        //join request trying to also join as black
         joinRequest = new TestModels.TestJoinRequest();
         joinRequest.gameID = createResult.gameID;
         joinRequest.playerColor = ChessGame.TeamColor.BLACK;

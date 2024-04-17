@@ -7,6 +7,7 @@ import client.webSocket.WebSocketFacade;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import model.Game;
+import model.JoinRequest;
 import server.ServerFacade;
 import java.net.HttpURLConnection;
 
@@ -70,6 +71,7 @@ public class LoggedInClient implements GameHandler {
         if (params.length >= 2) {
             this.gameID = Integer.parseInt(params[0]);
             var inputColor = params[1];
+            Game myGame = null;
             if (inputColor.toLowerCase().equals("WHITE".toLowerCase())){
                 this.playerColor = ChessGame.TeamColor.WHITE;
             }
@@ -79,9 +81,10 @@ public class LoggedInClient implements GameHandler {
             else {
                 throw new DataAccessException(400, "Expected: <GAMEID> [WHITE|BLACK]");
             }
+            JoinRequest joinRequest= new JoinRequest(playerColor, gameID);
+            server.joinGame(joinRequest, client.getAuthToken());
             wsFacade = new WebSocketFacade(client.getServerUrl(), this);
             wsFacade.joinPlayer(gameID, client.getAuthToken(), playerColor);
-            client.setState(State.GAMEPLAY);
             return "";
         }
         throw new DataAccessException(400, "Expected: <GAMEID> [WHITE|BLACK]");
@@ -91,11 +94,12 @@ public class LoggedInClient implements GameHandler {
         this.playerColor = null;
         if (params.length >= 1) {
             var gameID = Integer.parseInt(params[0]);
-            var game = new Game(null, gameID, null, null, null);
-            var response = server.joinGame(game, client.getAuthToken());
+//            var game = new Game(null, gameID, null, null, null);
+            JoinRequest joinRequest = new JoinRequest(null, gameID);
+            var response = server.joinGame(joinRequest, client.getAuthToken());
             wsFacade = new WebSocketFacade(client.getServerUrl(), this);
-            wsFacade.joinObserver(game.gameID(), client.getAuthToken());
-            client.setState(State.GAMEPLAY);
+            wsFacade.joinObserver(gameID, client.getAuthToken());
+//            client.setState(State.GAMEPLAY);
             return "";
         } else {
             throw new DataAccessException(400, "Expected: <GAMEID>");
@@ -107,15 +111,15 @@ public class LoggedInClient implements GameHandler {
     }
     private String leaveGame() throws DataAccessException{
         assertGamePlay();
-        client.setState(State.LOGGEDIN);
         wsFacade.leaveGame(this.gameID, client.getAuthToken());
-        wsFacade = null;
-        return "You left the game";
+        this.wsFacade = null;
+        client.setState(State.LOGGEDIN);
+        return "";
     }
     private String makeMove(String... params) throws DataAccessException{
         assertGamePlay();
-        wsFacade.makeMove(this.gameID, client.getAuthToken());
-        myChessGame = gameplay.makeMove(params);
+        var chessMove = gameplay.makeMove(params);
+        wsFacade.makeMove(gameID, client.getAuthToken(), chessMove);
         return redrawBoard();
     }
     private String showMoves(String... params) throws DataAccessException{
@@ -149,6 +153,7 @@ public class LoggedInClient implements GameHandler {
         } else {
             gameplay.game = game;
         }
+        client.setState(State.GAMEPLAY);
         System.out.println(gameplay.redrawBoard());
     }
     @Override

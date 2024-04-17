@@ -59,4 +59,7 @@ public class MemoryGameDAO implements GameDAO {
     }
     @Override
     public void createNewPlayableGame(Game game) throws DataAccessException{}
+
+//    @Override
+//    public void removePlayerFromGame(int gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException{}
 }
