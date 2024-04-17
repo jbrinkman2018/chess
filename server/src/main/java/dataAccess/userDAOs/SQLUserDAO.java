@@ -1,6 +1,6 @@
 package dataAccess.userDAOs;
 
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import dataAccess.DatabaseManager;
 import model.User;
 

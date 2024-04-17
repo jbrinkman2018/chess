@@ -1,7 +1,7 @@
 package client.webSocket;
 
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 
 import javax.websocket.*;
 import java.io.IOException;

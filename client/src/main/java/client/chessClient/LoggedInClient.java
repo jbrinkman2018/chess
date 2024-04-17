@@ -5,7 +5,7 @@ import client.State;
 import client.webSocket.GameHandler;
 import client.webSocket.WebSocketFacade;
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import model.Game;
 import model.JoinRequest;
 import server.ServerFacade;

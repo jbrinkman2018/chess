@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import dataAccess.authDAOs.AuthDAO;
 import dataAccess.authDAOs.SQLAuthDAO;
 import dataAccess.gameDAOs.GameDAO;

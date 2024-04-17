@@ -1,7 +1,7 @@
 package server.webSocket;
 
 import chess.InvalidMoveException;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import dataAccess.authDAOs.AuthDAO;
 import dataAccess.gameDAOs.GameDAO;
 import org.eclipse.jetty.websocket.api.Session;

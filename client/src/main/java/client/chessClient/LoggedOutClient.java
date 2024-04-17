@@ -1,7 +1,7 @@
 package client.chessClient;
 
 import client.State;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import model.User;
 import server.ServerFacade;
 

@@ -2,7 +2,7 @@ package client.chessClient;
 
 import chess.*;
 import client.BoardArtist;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 
 import java.util.ArrayList;
 import java.util.Collection;

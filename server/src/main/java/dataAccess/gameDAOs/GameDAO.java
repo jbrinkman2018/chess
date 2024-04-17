@@ -1,11 +1,8 @@
 package dataAccess.gameDAOs;
 import chess.ChessGame;
-import com.google.gson.Gson;
-import dataAccess.DataAccessException;
-import dataAccess.DatabaseManager;
+import DataAccessException.DataAccessException;
 import model.*;
 
-import javax.xml.crypto.Data;
 import java.util.Collection;
 public interface GameDAO {
     Collection<Game> listGames();

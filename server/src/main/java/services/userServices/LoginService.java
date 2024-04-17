@@ -1,7 +1,7 @@
 package services.userServices;
 
 import dataAccess.authDAOs.AuthDAO;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import dataAccess.userDAOs.UserDAO;
 import model.*;
 

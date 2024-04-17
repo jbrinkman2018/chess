@@ -1,6 +1,6 @@
 package dataAccess.authDAOs;
 
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import model.*;
 
 public interface AuthDAO {

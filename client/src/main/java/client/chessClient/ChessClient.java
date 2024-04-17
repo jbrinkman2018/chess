@@ -1,7 +1,7 @@
 package client.chessClient;
 
 import client.*;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import server.ServerFacade;
 
 import java.util.Arrays;

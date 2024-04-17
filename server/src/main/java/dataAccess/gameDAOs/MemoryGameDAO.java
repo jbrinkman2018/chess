@@ -1,10 +1,9 @@
 package dataAccess.gameDAOs;
 
 import chess.ChessGame;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import model.Game;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 

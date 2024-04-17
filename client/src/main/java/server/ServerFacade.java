@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import model.*;
 import java.io.*;
 import java.net.*;

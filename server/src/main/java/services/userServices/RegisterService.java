@@ -1,9 +1,9 @@
 package services.userServices;
 
+import DataAccessException.DataAccessException;
 import dataAccess.authDAOs.AuthDAO;
 import dataAccess.userDAOs.UserDAO;
 import model.*;
-import dataAccess.*;
 
 public class RegisterService extends UserService{
     public RegisterService(UserDAO userDAO, AuthDAO authDAO){

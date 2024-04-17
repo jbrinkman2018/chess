@@ -1,5 +1,5 @@
 package dataAccess.authDAOs;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import dataAccess.DatabaseManager;
 import model.*;
 import java.sql.ResultSet;

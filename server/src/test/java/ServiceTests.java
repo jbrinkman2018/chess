@@ -1,5 +1,5 @@
 import chess.ChessGame;
-import dataAccess.DataAccessException;
+import DataAccessException.DataAccessException;
 import dataAccess.authDAOs.*;
 import dataAccess.gameDAOs.*;
 import dataAccess.userDAOs.*;
