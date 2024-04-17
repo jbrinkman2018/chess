@@ -76,11 +76,30 @@ public class WebSocketServices extends GameService {
             throw new DataAccessException(500, e.getMessage());
         }
     }
-    public void makeMove(int gameID, chess.ChessMove move, String authToken, Session session) throws Throwable{
+    public void makeMove(int gameID, chess.ChessMove move, String authToken, Session session) throws DataAccessException {
         try {
             ChessGame game = gameDAO.getGame(gameID).game();
+            model.Game modelGame = gameDAO.getGame(gameID);
+            if (game.getTeamTurn() == null){
+                throw new DataAccessException(400, "Game is already over");
+            }
             String username = getUsername(authToken);
-            game.makeMove(move);
+            if (game.getTeamTurn() == ChessGame.TeamColor.WHITE){
+                if (!modelGame.whiteUsername().equals(username)){
+                    throw new DataAccessException(400, "It's not your turn");
+                }
+            } else if (game.getTeamTurn() == ChessGame.TeamColor.BLACK) {
+                if (!modelGame.blackUsername().equals(username)) {
+                    throw new DataAccessException(400, "It's not your turn");
+                }
+            }
+            try {
+                game.makeMove(move);
+            } catch (InvalidMoveException e){
+                throw new DataAccessException(400, e.getMessage());
+            }
+            model.Game updatedGame = new model.Game(modelGame.gameName(), modelGame.gameID(), modelGame.whiteUsername(), modelGame.blackUsername(), game);
+            gameDAO.updatePlayableGame(updatedGame);
             ServerMessage moveMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             moveMessage.setNotification(String.format("%s moved %s from %s to %s", username,
                     game.getBoard().getPiece(move.getStartPosition()), move.getStartPosition(), move.getEndPosition()));
@@ -150,7 +169,26 @@ public class WebSocketServices extends GameService {
             throw new DataAccessException(500, e.getMessage());
         }
     }
-    public void resign(int gameID, String authToken, Session session){}
+    public void resign(int gameID, String authToken, Session session) throws DataAccessException{
+        model.Game myGame = gameDAO.getGame(gameID);
+        if (!(getUsername(authToken).equals(myGame.blackUsername()) || getUsername(authToken).equals(myGame.whiteUsername()))){
+            throw new DataAccessException(400, "Only a player can resign");
+        }
+        if (myGame.game().getTeamTurn() == null){
+            throw new DataAccessException(400, "Game is already over");
+        }
+        else {
+            myGame.game().setGameOver();
+            gameDAO.updatePlayableGame(myGame);
+        }
+        ServerMessage resignMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        resignMessage.setNotification(String.format("%s resigned", getUsername(authToken)));
+        try{
+            sendAll(gameID, resignMessage, authToken);
+        } catch (IOException e){
+            throw new DataAccessException(500, e.getMessage());
+        }
+    }
     public void closeSession(Session session){
         sessions.removeSession(session);
     }

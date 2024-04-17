@@ -46,7 +46,7 @@ public class WebSocketHandler {
         ServerMessage msg = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
         msg.setErrorMessage(throwable.getMessage());
         try{
-        session.getRemote().sendString(new Gson().toJson(msg));
+            session.getRemote().sendString(new Gson().toJson(msg));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -54,6 +54,7 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session session, String str){
         try {
+            this.session = session;
             UserGameCommand cmd = new Gson().fromJson(str, UserGameCommand.class);
             switch (cmd.getCommandType()) {
                 case JOIN_PLAYER -> gameService.joinPlayer(cmd.getGameID(), cmd.getAuthString(), cmd.getPlayerColor(), session);
@@ -62,7 +63,7 @@ public class WebSocketHandler {
                 case LEAVE -> gameService.leave(cmd.getGameID(), cmd.getAuthString(), session);
                 case RESIGN -> gameService.resign(cmd.getGameID(), cmd.getAuthString(), session);
             }
-        } catch (Throwable e){
+        } catch (DataAccessException e){
             onError(e);
         }
     }

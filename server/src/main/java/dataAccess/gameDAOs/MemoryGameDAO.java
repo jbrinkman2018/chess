@@ -1,7 +1,9 @@
 package dataAccess.gameDAOs;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import dataAccess.DataAccessException;
+import dataAccess.DatabaseManager;
 import model.Game;
 
 import java.util.ArrayList;
@@ -59,7 +61,9 @@ public class MemoryGameDAO implements GameDAO {
     }
     @Override
     public void createNewPlayableGame(Game game) throws DataAccessException{}
-
+    @Override
+    public void updatePlayableGame(Game game) throws DataAccessException{
+    }
 //    @Override
 //    public void removePlayerFromGame(int gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException{}
 }

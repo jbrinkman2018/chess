@@ -94,12 +94,10 @@ public class LoggedInClient implements GameHandler {
         this.playerColor = null;
         if (params.length >= 1) {
             var gameID = Integer.parseInt(params[0]);
-//            var game = new Game(null, gameID, null, null, null);
             JoinRequest joinRequest = new JoinRequest(null, gameID);
             var response = server.joinGame(joinRequest, client.getAuthToken());
             wsFacade = new WebSocketFacade(client.getServerUrl(), this);
             wsFacade.joinObserver(gameID, client.getAuthToken());
-//            client.setState(State.GAMEPLAY);
             return "";
         } else {
             throw new DataAccessException(400, "Expected: <GAMEID>");

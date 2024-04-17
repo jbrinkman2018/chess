@@ -20,6 +20,11 @@ public class UserGameCommand {
         this.gameID = gameID;
         this.playerColor = playerColor;
     }
+    public UserGameCommand(String authToken, int gameID, ChessMove move) {
+        this.authToken = authToken;
+        this.gameID = gameID;
+        this.move = move;
+    }
 
 
     public enum CommandType {

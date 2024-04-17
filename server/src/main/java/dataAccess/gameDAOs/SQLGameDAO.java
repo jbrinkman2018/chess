@@ -163,8 +163,18 @@ public class SQLGameDAO implements GameDAO{
                 System.out.println(String.format("Error:", ex.getMessage()));
             }
     }
+    @Override
+    public void updatePlayableGame(Game game) throws DataAccessException{
+        try {
+            String SQLUpdateGame = "UPDATE game SET ChessGame = '"
+                    + new Gson().toJson(game) + "' WHERE gameID = " + game.gameID();
+            DatabaseManager.executeUpdate(SQLUpdateGame);
+        } catch (DataAccessException ex) {
+            System.out.println(String.format("Error:", ex.getMessage()));
+        }
+    }
 //    @Override
-//    public void removePlayerFromGame(int gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException {
+//    public void updateGameMoves() throws DataAccessException {
 ////        String SQLUpdateGame = "UPDATE game SET " + playerColor.toString().toLowerCase() + "username = '"
 ////                + username + " WHERE gameID = " + gameID;
 //    }

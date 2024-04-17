@@ -31,6 +31,9 @@ public class ChessGame {
     public TeamColor getTeamTurn() {
         return teamTurn;
     }
+    public void setGameOver(){
+        this.teamTurn = null;
+    }
 
     /**
      * Set's which teams turn it is
