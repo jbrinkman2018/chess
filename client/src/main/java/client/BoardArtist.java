@@ -130,31 +130,9 @@ public class BoardArtist {
                 position = new ChessPosition(row, (9-col));
             }
             if (col % 2 == 0) {
-                if (endPositions.contains(position)) {
-                    str.append(EscapeSequences.SET_BG_COLOR_YELLOW);
-                }
-                else {
-                    str.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-                }
-                if (board.getPiece(position) == null) {
-                    str.append(EscapeSequences.EMPTY);
-                }
-                else {
-                    str.append(drawChessPiece(position));
-                }
+                str.append(colorDarkGreyOrYellow(position));
             } else {
-                if (endPositions.contains(position)) {
-                    str.append(EscapeSequences.SET_BG_COLOR_YELLOW);
-                }
-                else {
-                    str.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-                }
-                if (board.getPiece(position) == null) {
-                    str.append(EscapeSequences.EMPTY);
-                }
-                else {
-                    str.append(drawChessPiece(position));
-                }
+                str.append(colorLightGreyOrYellow(position));
             }
         }
         return str.toString();
@@ -167,31 +145,9 @@ public class BoardArtist {
                 position = new ChessPosition(row, (9-col));
             }
             if (col % 2 == 0) {
-                if (endPositions.contains(position)) {
-                    str.append(EscapeSequences.SET_BG_COLOR_YELLOW);
-                }
-                else {
-                    str.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-                }
-                if (board.getPiece(position) == null) {
-                    str.append(EscapeSequences.EMPTY);
-                }
-                else {
-                    str.append(drawChessPiece(position));
-                }
+                str.append(colorLightGreyOrYellow(position));
             } else {
-                if (endPositions.contains(position)) {
-                    str.append(EscapeSequences.SET_BG_COLOR_YELLOW);
-                }
-                else {
-                    str.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-                }
-                if (board.getPiece(position) == null) {
-                    str.append(EscapeSequences.EMPTY);
-                }
-                else {
-                    str.append(drawChessPiece(position));
-                }
+                str.append(colorDarkGreyOrYellow(position));
             }
         }
         return str.toString();
@@ -247,5 +203,37 @@ public class BoardArtist {
             }
         }
         return null;
+    }
+    private String colorDarkGreyOrYellow(ChessPosition position){
+        StringBuilder str = new StringBuilder();
+        if (endPositions.contains(position)) {
+            str.append(EscapeSequences.SET_BG_COLOR_YELLOW);
+        }
+        else {
+            str.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+        }
+        if (board.getPiece(position) == null) {
+            str.append(EscapeSequences.EMPTY);
+        }
+        else {
+            str.append(drawChessPiece(position));
+        }
+        return str.toString();
+    }
+    private String colorLightGreyOrYellow(ChessPosition position) {
+        StringBuilder str = new StringBuilder();
+        if (endPositions.contains(position)) {
+            str.append(EscapeSequences.SET_BG_COLOR_YELLOW);
+        }
+        else {
+            str.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        }
+        if (board.getPiece(position) == null) {
+            str.append(EscapeSequences.EMPTY);
+        }
+        else {
+            str.append(drawChessPiece(position));
+        }
+        return str.toString();
     }
 }
